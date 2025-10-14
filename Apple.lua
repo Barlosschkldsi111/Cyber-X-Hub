@@ -7624,9 +7624,9 @@ end
 end function __DIST.D()
 local types = __DIST.load('b')
 
-return function(self, properties: SliderProperties__DARKLUA_TYPE_R): Slider__DARKLUA_TYPE_S	--// Imports
-	
-local creator = __DIST.load('d')
+return function(self, properties: SliderProperties__DARKLUA_TYPE_R): Slider__DARKLUA_TYPE_S
+	--// Imports
+	local creator = __DIST.load('d')
 	local binder = __DIST.load('c')
 
 	--// References
@@ -7643,6 +7643,7 @@ local creator = __DIST.load('d')
 	properties.Value = properties.Value or 0
 	properties.Maximum = properties.Maximum or 1
 	properties.Minimum = properties.Minimum or 0
+	properties.Step = properties.Step or 1 -- ✅ เพิ่ม Step
 
 	structures.Body = binder.Apply(
 		properties,
@@ -7779,12 +7780,26 @@ local creator = __DIST.load('d')
 					}),
 				}),
 			}),
+
+			-- ✅ เพิ่ม Label แสดงค่า
+			create("TextLabel")({
+				Name = "ValueLabel",
+				AnchorPoint = Vector2.new(0, 0.5),
+				Position = UDim2.new(1, 10, 0.5, 0),
+				BackgroundTransparency = 1,
+				TextColor3 = Color3.new(1, 1, 1),
+				TextXAlignment = Enum.TextXAlignment.Left,
+				Text = tostring(math.floor(properties.Value + 0.5)),
+				Font = Enum.Font.GothamBold,
+				TextSize = 14,
+			}),
 		})
 	) :: ImageLabel
 
 	--// Initialize
 	structures.Fill = structures.Body:FindFirstChild("Fill") :: Frame
 	structures.Thumb = structures.Fill:FindFirstChild("Thumb") :: Frame
+	structures.ValueLabel = structures.Body:FindFirstChild("ValueLabel") :: TextLabel
 	structures.Dragger = create("UIDragDetector")({
 		Name = "UIDragDetector",
 		ResponseStyle = Enum.UIDragDetectorResponseStyle.CustomOffset,
@@ -7804,22 +7819,27 @@ local creator = __DIST.load('d')
 
 			local min = properties.Minimum
 			local max = properties.Maximum
-			local alpha = (value - min) / (max - min)
+			local step = properties.Step or 1
 
+			-- ✅ ปัดค่าให้ตรง Step
+			local stepped = math.floor((value - min) / step + 0.5) * step + min
+			stepped = math.clamp(stepped, min, max)
+
+			local alpha = (stepped - min) / (max - min)
 			local availableWidth = sliderWidth - thumbWidth
 			local fillWidth = thumbHalfWidth + (availableWidth * alpha)
 
 			structures.Fill.Size = UDim2.new(0, fillWidth, 1, 0)
+			structures.ValueLabel.Text = tostring(stepped) -- ✅ อัปเดตเลขใน UI
 
 			if properties.ValueChanged then
-				properties.Value = value
-				task.spawn(properties.ValueChanged, object, value)
+				properties.Value = stepped
+				task.spawn(properties.ValueChanged, object, stepped)
 			end
 		end,
 	}
 
 	object = binder.Wrap(properties, bindings, structures.Body)
-
 	object.Type = "Slider"
 	object.Theme = self.Theme
 	object.Structures = structures
@@ -7841,14 +7861,15 @@ local creator = __DIST.load('d')
 		local clampedCenterX = math.clamp(newCenterX, minX, maxX)
 
 		local alpha = (clampedCenterX - minX) / (maxX - minX)
-		
-		object.Value = object.Minimum + (object.Maximum - object.Minimum) * alpha
+		local value = object.Minimum + (object.Maximum - object.Minimum) * alpha
+
+		object.Value = value 
 	end)
 
 	binder.Apply(properties, object)
-
 	return object
 end
+
 end function __DIST.E()
 local types = __DIST.load('b')
 
