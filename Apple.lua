@@ -7643,177 +7643,92 @@ return function(self, properties: SliderProperties__DARKLUA_TYPE_R): Slider__DAR
 	properties.Value = properties.Value or 0
 	properties.Maximum = properties.Maximum or 1
 	properties.Minimum = properties.Minimum or 0
-	properties.Step = properties.Step or 1 -- ✅ เพิ่ม Step
+	properties.Step = properties.Step or 1 -- ✅ Step ทีละ 1
 
 	structures.Body = binder.Apply(
 		properties,
-		create("ImageLabel")({
-			Name = "Slider",
-			Active = true,
-			AnchorPoint = Vector2.new(0, 0.5),
-			BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+		create("Frame")({
+			Name = "SliderContainer",
 			BackgroundTransparency = 1,
-			BorderColor3 = Color3.fromRGB(0, 0, 0),
-			BorderSizePixel = 0,
-			Image = "rbxassetid://92966982499851",
-			Position = UDim2.fromScale(0, 0.5),
-			Selectable = true,
-			Size = UDim2.fromOffset(150, 4),
+			Size = UDim2.fromOffset(200, 20),
 			Parent = parent,
 
-			__dynamicKeys = {
-				ImageColor3 = theme.Track[1],
-				ImageTransparency = theme.Track[2],
-			},
-
-			create("ImageLabel")({
-				Name = "TrackClip",
-				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-				BackgroundTransparency = 1,
-				BorderColor3 = Color3.fromRGB(0, 0, 0),
-				BorderSizePixel = 0,
-				Image = "rbxassetid://113661976068590",
-				ImageColor3 = Color3.fromRGB(252, 252, 252),
-				ResampleMode = Enum.ResamplerMode.Pixelated,
-				Size = UDim2.new(0, 2, 1, 0),
-				ZIndex = 3,
-
-				__dynamicKeys = {
-					ImageColor3 = self.Theme.Controls.View[1],
-					ImageTransparency = self.Theme.Controls.View[2],
-				},
-			}),
-
-			create("Frame")({
-				Name = "Fill",
-				BorderColor3 = Color3.fromRGB(0, 0, 0),
-				BorderSizePixel = 0,
-				Size = UDim2.fromScale(0, 1),
-
-				__dynamicKeys = {
-					BackgroundColor3 = self.Theme.Controls.Selection[1],
-					BackgroundTransparency = self.Theme.Controls.Selection[2],
-				},
-
-				create("ImageLabel")({
-					Name = "Effects",
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 1,
-					BorderColor3 = Color3.fromRGB(0, 0, 0),
-					BorderSizePixel = 0,
-					Image = "rbxassetid://82410105327406",
-					ImageColor3 = Color3.fromRGB(0, 0, 0),
-					Size = UDim2.new(0, 150, 1, 0),
-					ZIndex = 0,
-
-					__dynamicKeys = {
-						ImageColor3 = theme.TrackEffects[1],
-						ImageTransparency = theme.TrackEffects[2],
-					},
-				}),
-
-				create("Frame")({
-					Name = "Thumb",
-					Active = true,
-					AnchorPoint = Vector2.new(0.5, 0.5),
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 1,
-					BorderColor3 = Color3.fromRGB(0, 0, 0),
-					BorderSizePixel = 0,
-					Position = UDim2.fromScale(1, 0),
-					Selectable = true,
-					Size = UDim2.fromOffset(20, 20),
-					ZIndex = 2,
-
-					create("ImageLabel")({
-						Name = "Background",
-						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-						BackgroundTransparency = 1,
-						BorderColor3 = Color3.fromRGB(0, 0, 0),
-						BorderSizePixel = 0,
-						Image = "rbxassetid://125496304036680",
-						Selectable = true,
-						Size = UDim2.fromOffset(20, 20),
-
-						__dynamicKeys = {
-							ImageColor3 = theme.Thumb[1],
-							ImageTransparency = theme.Thumb[2],
-						},
-
-						create("UIStroke")({
-							Name = "UIStroke",
-							ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-
-							__dynamicKeys = {
-								Color = theme.ThumbStroke[1],
-								Transparency = theme.ThumbStroke[2],
-							},
-						}),
-
-						create("UICorner")({
-							Name = "UICorner",
-							CornerRadius = UDim.new(1, 0),
-						}),
-					}),
-
-					create("ImageLabel")({
-						Name = "ThumbEffects",
-						AnchorPoint = Vector2.new(0.5, 0),
-						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-						BackgroundTransparency = 1,
-						BorderColor3 = Color3.fromRGB(0, 0, 0),
-						BorderSizePixel = 0,
-						Image = "rbxassetid://85926626300527",
-						Position = UDim2.fromScale(0.5, 0),
-						Size = UDim2.fromOffset(22, 22),
-						ZIndex = 0,
-
-						__dynamicKeys = {
-							ImageColor3 = theme.ThumbEffects[1],
-							ImageTransparency = theme.ThumbEffects[2],
-						},
-
-						create("UICorner")({
-							Name = "UICorner",
-							CornerRadius = UDim.new(1, 0),
-						}),
-					}),
-				}),
-			}),
-
-			-- ✅ เพิ่ม Label แสดงค่า
+			-- ✅ Label แสดงค่าด้านหน้า (ซ้ายมือ)
 			create("TextLabel")({
 				Name = "ValueLabel",
 				AnchorPoint = Vector2.new(0, 0.5),
-				Position = UDim2.new(1, 10, 0.5, 0),
+				Position = UDim2.new(0, 0, 0.5, 0),
 				BackgroundTransparency = 1,
 				TextColor3 = Color3.new(1, 1, 1),
 				TextXAlignment = Enum.TextXAlignment.Left,
 				Text = tostring(math.floor(properties.Value + 0.5)),
 				Font = Enum.Font.GothamBold,
 				TextSize = 14,
+				Size = UDim2.fromOffset(35, 20),
+			}),
+
+			create("ImageLabel")({
+				Name = "Slider",
+				Active = true,
+				AnchorPoint = Vector2.new(0, 0.5),
+				BackgroundTransparency = 1,
+				Image = "rbxassetid://92966982499851",
+				Position = UDim2.new(0, 40, 0.5, 0),
+				Size = UDim2.fromOffset(150, 4),
+				__dynamicKeys = {
+					ImageColor3 = theme.Track[1],
+					ImageTransparency = theme.Track[2],
+				},
+
+				create("Frame")({
+					Name = "Fill",
+					BorderSizePixel = 0,
+					Size = UDim2.fromScale(0, 1),
+					__dynamicKeys = {
+						BackgroundColor3 = self.Theme.Controls.Selection[1],
+						BackgroundTransparency = self.Theme.Controls.Selection[2],
+					},
+
+					create("Frame")({
+						Name = "Thumb",
+						AnchorPoint = Vector2.new(0.5, 0.5),
+						BackgroundTransparency = 1,
+						Position = UDim2.fromScale(1, 0.5),
+						Size = UDim2.fromOffset(20, 20),
+
+						create("ImageLabel")({
+							Name = "Background",
+							BackgroundTransparency = 1,
+							Image = "rbxassetid://125496304036680",
+							Size = UDim2.fromOffset(20, 20),
+							__dynamicKeys = {
+								ImageColor3 = theme.Thumb[1],
+								ImageTransparency = theme.Thumb[2],
+							},
+						}),
+					}),
+				}),
 			}),
 		})
-	) :: ImageLabel
+	) :: Frame
 
 	--// Initialize
-	structures.Fill = structures.Body:FindFirstChild("Fill") :: Frame
+	structures.Slider = structures.Body:FindFirstChild("Slider") :: ImageLabel
+	structures.Fill = structures.Slider:FindFirstChild("Fill") :: Frame
 	structures.Thumb = structures.Fill:FindFirstChild("Thumb") :: Frame
 	structures.ValueLabel = structures.Body:FindFirstChild("ValueLabel") :: TextLabel
+
+	-- Dragger
 	structures.Dragger = create("UIDragDetector")({
 		Name = "UIDragDetector",
 		ResponseStyle = Enum.UIDragDetectorResponseStyle.CustomOffset,
-		SelectionModeDragSpeed = UDim2.new(),
-		SelectionModeRotateSpeed = 0,
-		ActivatedCursorIcon = "rbxassetid://0",
-		CursorIcon = "rbxassetid://0",
 		Parent = structures.Thumb,
 	}) :: UIDragDetector
 
 	local object
 	local bindings = {
 		Value = function(value: number)
-			local sliderWidth = structures.Body.AbsoluteSize.X
+			local sliderWidth = structures.Slider.AbsoluteSize.X
 			local thumbWidth = structures.Thumb.AbsoluteSize.X
 			local thumbHalfWidth = thumbWidth / 2
 
@@ -7821,7 +7736,6 @@ return function(self, properties: SliderProperties__DARKLUA_TYPE_R): Slider__DAR
 			local max = properties.Maximum
 			local step = properties.Step or 1
 
-			-- ✅ ปัดค่าให้ตรง Step
 			local stepped = math.floor((value - min) / step + 0.5) * step + min
 			stepped = math.clamp(stepped, min, max)
 
@@ -7830,7 +7744,7 @@ return function(self, properties: SliderProperties__DARKLUA_TYPE_R): Slider__DAR
 			local fillWidth = thumbHalfWidth + (availableWidth * alpha)
 
 			structures.Fill.Size = UDim2.new(0, fillWidth, 1, 0)
-			structures.ValueLabel.Text = tostring(stepped) -- ✅ อัปเดตเลขใน UI
+			structures.ValueLabel.Text = tostring(stepped) -- ✅ อัปเดตเลขซ้ายมือ
 
 			if properties.ValueChanged then
 				properties.Value = stepped
@@ -7849,7 +7763,7 @@ return function(self, properties: SliderProperties__DARKLUA_TYPE_R): Slider__DAR
 	end)
 
 	structures.Dragger.DragContinue:Connect(function()
-		local sliderWidth = structures.Body.AbsoluteSize.X
+		local sliderWidth = structures.Slider.AbsoluteSize.X
 		local thumbWidth = structures.Thumb.AbsoluteSize.X
 		local thumbHalfWidth = thumbWidth / 2
 
@@ -7863,7 +7777,7 @@ return function(self, properties: SliderProperties__DARKLUA_TYPE_R): Slider__DAR
 		local alpha = (clampedCenterX - minX) / (maxX - minX)
 		local value = object.Minimum + (object.Maximum - object.Minimum) * alpha
 
-		object.Value = value 
+		object.Value = value
 	end)
 
 	binder.Apply(properties, object)
@@ -8117,6 +8031,7 @@ local creator = __DIST.load('d')
 
 	return object
 end
+
 end function __DIST.F()
 local types = __DIST.load('b')
 
