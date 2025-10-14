@@ -3904,18 +3904,18 @@ return {
 		},
 
 		Toggle = {
-			Knob = color4("FFFFFF", 100),
-			KnobEffects = color4("FFFFFF", 100),
+	Knob = color4("FFFFFF", 100),
+	KnobEffects = color4("FFFFFF", 100),
 
-			SwitchOff = color4("7a7a7a", 40),
-			SwitchOn = color4("478cf6", 100),
+	SwitchOff = color4("7a7a7a", 40),
+	SwitchOn = color4("ff2360", 100),
 
-			DepthEffect = value(ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(225, 225, 225)),
-				ColorSequenceKeypoint.new(0.68, Color3.fromRGB(255, 255, 255)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255)),
-			})),
-		},
+	DepthEffect = value(ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 100, 150)),
+		ColorSequenceKeypoint.new(0.68, Color3.fromRGB(255, 70, 130)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 50, 110)),
+	})),
+}
 
 		Slider = {
 			Track = color4("2C2C2E", 100),
@@ -3928,16 +3928,16 @@ return {
 		},
 
 		Button = {
-			Shadow = value(Color3.fromRGB(50, 50, 50)),
-			FillPrimary = value(ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(72, 148, 255)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(10, 110, 255)),
-			})),
-			FillSecondary = value(ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 60, 60)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(55, 55, 55)),
-			})),
-		},
+	Shadow = value(Color3.fromRGB(40, 40, 40)),
+	FillPrimary = value(ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 45, 100)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 25, 85)),  
+	})),
+	FillSecondary = value(ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 60, 60)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 50)),
+	})),
+}
 
 		Stepper = {
 			Background = color4("373737", 100),
@@ -7623,9 +7623,9 @@ end
 end function __DIST.D()
 local types = __DIST.load('b')
 
-return function(self, properties: SliderProperties__DARKLUA_TYPE_R): Slider__DARKLUA_TYPE_S	--// Imports
-	
-local creator = __DIST.load('d')
+return function(self, properties: SliderProperties__DARKLUA_TYPE_R): Slider__DARKLUA_TYPE_S
+	--// Imports
+	local creator = __DIST.load('d')
 	local binder = __DIST.load('c')
 
 	--// References
@@ -7642,6 +7642,7 @@ local creator = __DIST.load('d')
 	properties.Value = properties.Value or 0
 	properties.Maximum = properties.Maximum or 1
 	properties.Minimum = properties.Minimum or 0
+	properties.Step = properties.Step or 1 -- ✅ เพิ่ม Step
 
 	structures.Body = binder.Apply(
 		properties,
@@ -7778,12 +7779,26 @@ local creator = __DIST.load('d')
 					}),
 				}),
 			}),
+
+			-- ✅ เพิ่ม Label แสดงค่า
+			create("TextLabel")({
+				Name = "ValueLabel",
+				AnchorPoint = Vector2.new(0, 0.5),
+				Position = UDim2.new(1, 10, 0.5, 0),
+				BackgroundTransparency = 1,
+				TextColor3 = Color3.new(1, 1, 1),
+				TextXAlignment = Enum.TextXAlignment.Left,
+				Text = tostring(math.floor(properties.Value + 0.5)),
+				Font = Enum.Font.GothamBold,
+				TextSize = 14,
+			}),
 		})
 	) :: ImageLabel
 
 	--// Initialize
 	structures.Fill = structures.Body:FindFirstChild("Fill") :: Frame
 	structures.Thumb = structures.Fill:FindFirstChild("Thumb") :: Frame
+	structures.ValueLabel = structures.Body:FindFirstChild("ValueLabel") :: TextLabel
 	structures.Dragger = create("UIDragDetector")({
 		Name = "UIDragDetector",
 		ResponseStyle = Enum.UIDragDetectorResponseStyle.CustomOffset,
@@ -7803,22 +7818,27 @@ local creator = __DIST.load('d')
 
 			local min = properties.Minimum
 			local max = properties.Maximum
-			local alpha = (value - min) / (max - min)
+			local step = properties.Step or 1
 
+			-- ✅ ปัดค่าให้ตรง Step
+			local stepped = math.floor((value - min) / step + 0.5) * step + min
+			stepped = math.clamp(stepped, min, max)
+
+			local alpha = (stepped - min) / (max - min)
 			local availableWidth = sliderWidth - thumbWidth
 			local fillWidth = thumbHalfWidth + (availableWidth * alpha)
 
 			structures.Fill.Size = UDim2.new(0, fillWidth, 1, 0)
+			structures.ValueLabel.Text = tostring(stepped) -- ✅ อัปเดตเลขใน UI
 
 			if properties.ValueChanged then
-				properties.Value = value
-				task.spawn(properties.ValueChanged, object, value)
+				properties.Value = stepped
+				task.spawn(properties.ValueChanged, object, stepped)
 			end
 		end,
 	}
 
 	object = binder.Wrap(properties, bindings, structures.Body)
-
 	object.Type = "Slider"
 	object.Theme = self.Theme
 	object.Structures = structures
@@ -7840,14 +7860,15 @@ local creator = __DIST.load('d')
 		local clampedCenterX = math.clamp(newCenterX, minX, maxX)
 
 		local alpha = (clampedCenterX - minX) / (maxX - minX)
-		
-		object.Value = object.Minimum + (object.Maximum - object.Minimum) * alpha
+		local value = object.Minimum + (object.Maximum - object.Minimum) * alpha
+
+		object.Value = value 
 	end)
 
 	binder.Apply(properties, object)
-
 	return object
 end
+
 end function __DIST.E()
 local types = __DIST.load('b')
 
