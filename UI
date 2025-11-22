@@ -4172,7 +4172,7 @@ function b:Window(t)
 				local t = t or {}
 				local an = {
 					Title = t.title or t.Title or "Toggle",
-					Description = t.description or t.Description or t.desc or t.Desc or "",
+					Description = t.description or t.Description or t.desc or t.Desc or false,
 					Default = t.default or t.Default or t.value or t.Value or false,
 					Flags = t.flags or t.Flags or t.pointer or t.Pointer or t.flag or t.Flag or false,
 					Sections = cN
@@ -4200,7 +4200,7 @@ function b:Window(t)
 				local t = t or {}
 				local an = {
 					Title = t.title or t.Title or "Slider",
-					Description = t.description or t.Description or t.desc or t.Desc or "",
+					Description = t.description or t.Description or t.desc or t.Desc or false,
 					Default = t.default or t.Default or t.value or t.Value or 0,
 					Min = t.min or t.Min or 0,
 					Max = t.max or t.Max or 100,
