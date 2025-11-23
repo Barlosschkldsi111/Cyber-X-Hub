@@ -2621,7 +2621,7 @@ function b:Window(t)
 			local t = t or {}
 			local an = {
 				Title = t.title or t.Title or "Button",
-				Description = t.description or t.Description or t.desc or t.Desc or "",
+				Description = t.description or t.Description or t.desc or t.Desc or nil,
 				Callback = t.callback or t.Callback or function()
 					end,
 				Sections = t.sections or t.Sections or false
