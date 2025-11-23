@@ -2136,7 +2136,7 @@ function b:Window(t)
 		local t = t or {}
 		local an = {
 			Title = t.title or t.Title or "Tab",
-			Description = t.description or t.Description or t.Desc or t.Desc or t.title or t.Title or "Tab",
+			Description = t.description or t.Description or t.Desc or t.Desc or t.title or t.Title or nil,
 			Icon = t.icon or t.Icon or ""
 		}
 		local bj =
@@ -2759,7 +2759,7 @@ function b:Window(t)
 				local t = t or {}
 				local an = {
 					Title = t.title or t.Title or "Button",
-					Description = t.description or t.Description or t.desc or t.Desc or "",
+					Description = t.description or t.Description or t.desc or t.Desc or nil,
 					Callback = t.callback or t.Callback or function()
 						end
 				}
@@ -3099,7 +3099,7 @@ function b:Window(t)
 			local t = t or {}
 			local an = {
 				Title = t.title or t.Title or "Dropdown",
-				Description = t.description or t.Description or t.desc or t.Desc or "",
+				Description = t.description or t.Description or t.desc or t.Desc or nil,
 				Values = t.values or t.Values or t.options or t.Options or t.list or t.List or {},
 				Multi = t.multi or t.Multi or false,
 				Default = t.default or t.Default or {},
@@ -4159,7 +4159,7 @@ function b:Window(t)
 				local t = t or {}
 				local an = {
 					Title = t.title or t.Title or "Button",
-					Description = t.description or t.Description or t.desc or t.Desc or "",
+					Description = t.description or t.Description or t.desc or t.Desc or nil,
 					Callback = t.callback or t.Callback or function()
 						end,
 					Sections = cN
@@ -4185,7 +4185,7 @@ function b:Window(t)
 				local t = t or {}
 				local an = {
 					Title = t.title or t.Title or "Dropdown",
-					Description = t.description or t.Description or t.desc or t.Desc or "",
+					Description = t.description or t.Description or t.desc or t.Desc or nil,
 					Values = t.values or t.Values or t.options or t.Options or {},
 					Default = t.default or t.Default or t.value or t.Value or {},
 					Multi = t.multi or t.Multi or false,
@@ -4200,7 +4200,7 @@ function b:Window(t)
 				local t = t or {}
 				local an = {
 					Title = t.title or t.Title or "Slider",
-					Description = t.description or t.Description or t.desc or t.Desc or false,
+					Description = t.description or t.Description or t.desc or t.Desc or nil,
 					Default = t.default or t.Default or t.value or t.Value or 0,
 					Min = t.min or t.Min or 0,
 					Max = t.max or t.Max or 100,
