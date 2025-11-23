@@ -2702,31 +2702,33 @@ function b:Window(t)
 					Parent = bQ
 				}
 			)
-			local bS =
-				b:Create(
-				"TextLabel",
-				{
-					FontFace = b.Settings.FontFace or
-						Font.new(
-							"rbxasset://fonts/families/GothamSSm.json",
-							Enum.FontWeight.Regular,
-							Enum.FontStyle.Normal
-						),
-					Text = an.Description,
-					TextColor3 = Color3.fromRGB(170, 170, 170),
-					TextSize = 12,
-					TextWrapped = true,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					AutomaticSize = Enum.AutomaticSize.Y,
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 1,
-					BorderColor3 = Color3.fromRGB(0, 0, 0),
-					Size = UDim2.new(1, 0, 0, 14),
-					Visible = true,
-					Name = "ButtonDesc",
-					Parent = bQ
-				}
-			)
+			if an.Description then
+				local bS =
+					b:Create(
+					"TextLabel",
+					{
+						FontFace = b.Settings.FontFace or
+							Font.new(
+								"rbxasset://fonts/families/GothamSSm.json",
+								Enum.FontWeight.Regular,
+								Enum.FontStyle.Normal
+							),
+						Text = an.Description,
+						TextColor3 = Color3.fromRGB(170, 170, 170),
+						TextSize = 12,
+						TextWrapped = true,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						AutomaticSize = Enum.AutomaticSize.Y,
+						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+						BackgroundTransparency = 1,
+						BorderColor3 = Color3.fromRGB(0, 0, 0),
+						Size = UDim2.new(1, 0, 0, 14),
+						Visible = true,
+						Name = "ButtonDesc",
+						Parent = bQ
+					}
+				)
+			end
 			local bT =
 				b:Create(
 				"ImageLabel",
@@ -2863,31 +2865,31 @@ function b:Window(t)
 					Parent = bW
 				}
 			)
-			local bY =
-				b:Create(
-				"TextLabel",
-				{
-					FontFace = b.Settings.FontFace or
-						Font.new(
+			if an.Description then
+				local bY = b:Create(
+					"TextLabel",
+					{
+						FontFace = b.Settings.FontFace or Font.new(
 							"rbxasset://fonts/families/GothamSSm.json",
 							Enum.FontWeight.Regular,
 							Enum.FontStyle.Normal
 						),
-					Text = an.Description,
-					TextColor3 = Color3.fromRGB(170, 170, 170),
-					TextSize = 12,
-					TextWrapped = true,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					AutomaticSize = Enum.AutomaticSize.Y,
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 1,
-					BorderColor3 = Color3.fromRGB(0, 0, 0),
-					Size = UDim2.new(1, -54, 0, 14),
-					Visible = true,
-					Name = "ToggleDesc",
-					Parent = bW
-				}
-			)
+						Text = an.Description,
+						TextColor3 = Color3.fromRGB(170, 170, 170),
+						TextSize = 12,
+						TextWrapped = true,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						AutomaticSize = Enum.AutomaticSize.Y,
+						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+						BackgroundTransparency = 1,
+						BorderColor3 = Color3.fromRGB(0, 0, 0),
+						Size = UDim2.new(1, -54, 0, 14),
+						Visible = true,
+						Name = "ToggleDesc",
+						Parent = bW
+					}
+				)
+			end
 			local bL = bY.TextBounds.Y
 			bY.Size = UDim2.new(1, -54, 0, bL)
 			local bZ = c:LightenColor(b.Themes.BackgroundColor, 0.5)
@@ -3098,7 +3100,7 @@ function b:Window(t)
 			local t = t or {}
 			local an = {
 				Title = t.title or t.Title or "Dropdown",
-				Description = t.description or t.Description or t.desc or t.Desc or nil,
+				Description = t.description or t.Description or t.desc or t.Desc or false,
 				Values = t.values or t.Values or t.options or t.Options or t.list or t.List or {},
 				Multi = t.multi or t.Multi or false,
 				Default = t.default or t.Default or {},
@@ -3319,7 +3321,7 @@ function b:Window(t)
 				{
 					Name = "OptionSearchBox",
 					FontFace = b.Settings.FontFace or Font.new("rbxasset://fonts/families/GothamSSm.json"),
-					PlaceholderText = "ค้นหา...",
+					PlaceholderText = "Search",
 					Text = "",
 					TextColor3 = Color3.fromRGB(240, 240, 240),
 					TextSize = 13,
@@ -3731,25 +3733,27 @@ function b:Window(t)
 					Parent = cu
 				}
 			)
-			local cw =
-				b:Create(
-				"TextLabel",
-				{
-					Name = "SliderDesc",
-					FontFace = b.Settings.FontFace or Font.new("rbxasset://fonts/families/GothamSSm.json"),
-					Text = an.Description,
-					TextColor3 = Color3.fromRGB(170, 170, 170),
-					TextSize = 12,
-					TextWrapped = true,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					AutomaticSize = Enum.AutomaticSize.Y,
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 1,
-					BorderColor3 = Color3.fromRGB(0, 0, 0),
-					Size = UDim2.new(1, -170, 0, 14),
-					Parent = cu
-				}
-			)
+			if an.Description then 
+				local cw =
+					b:Create(
+					"TextLabel",
+					{
+						Name = "SliderDesc",
+						FontFace = b.Settings.FontFace or Font.new("rbxasset://fonts/families/GothamSSm.json"),
+						Text = an.Description,
+						TextColor3 = Color3.fromRGB(170, 170, 170),
+						TextSize = 12,
+						TextWrapped = true,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						AutomaticSize = Enum.AutomaticSize.Y,
+						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+						BackgroundTransparency = 1,
+						BorderColor3 = Color3.fromRGB(0, 0, 0),
+						Size = UDim2.new(1, -170, 0, 14),
+						Parent = cu
+					}
+				)
+		    end
 			local cx =
 				b:Create(
 				"Frame",
