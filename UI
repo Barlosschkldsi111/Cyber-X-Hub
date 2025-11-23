@@ -3108,238 +3108,311 @@ function b:Window(t)
 			}
 		
 			local c8 = an.Sections and an.Sections or bk
+		
 			local c9 = b:Create("TextButton", {
 				FontFace = b.Settings.FontFace or Font.new("rbxasset://fonts/families/SourceSansPro.json"),
 				Text = "",
-				TextColor3 = Color3.fromRGB(0, 0, 0),
+				TextColor3 = Color3.fromRGB(0,0,0),
 				TextSize = 14,
 				AutomaticSize = Enum.AutomaticSize.Y,
-				BackgroundColor3 = Color3.fromRGB(120, 120, 120),
-				BackgroundTransparency = 0.9,
-				BorderColor3 = Color3.fromRGB(0, 0, 0),
+				BackgroundColor3 = Color3.fromRGB(120,120,120),
+				BackgroundTransparency = 0.87,
+				BorderColor3 = Color3.fromRGB(0,0,0),
 				LayoutOrder = 7,
-				Size = UDim2.new(1, 0, 0, 0),
+				Size = UDim2.new(1,0,0,0),
 				Visible = true,
 				Name = "DropdownHolder",
 				Parent = c8
 			}, {
-				b:Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
-				b:Create("UIStroke", {ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Color = Color3.fromRGB(35, 35, 35), Transparency = 0.5})
+				b:Create("UICorner", {CornerRadius = UDim.new(0,4)}),
+				b:Create("UIStroke", {ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Color = Color3.fromRGB(35,35,35)})
 			})
 		
 			local ca = b:Create("Frame", {
 				AutomaticSize = Enum.AutomaticSize.Y,
-				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+				BackgroundColor3 = Color3.fromRGB(255,255,255),
 				BackgroundTransparency = 1,
+				BorderColor3 = Color3.fromRGB(0,0,0),
 				BorderSizePixel = 0,
-				Position = UDim2.new(0, 10, 0, 0),
-				Size = UDim2.new(1, -28, 0, 0),
+				Position = UDim2.new(0,10,0,0),
+				Size = UDim2.new(1,-28,0,0),
 				Visible = true,
 				Name = "DropdownFrame",
 				Parent = c9
 			}, {
-				b:Create("UIListLayout", {VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 5)}),
-				b:Create("UIPadding", {PaddingBottom = UDim.new(0, 13), PaddingTop = UDim.new(0, 13)})
+				b:Create("UIListLayout", {VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0,5)}),
+				b:Create("UIPadding", {PaddingBottom = UDim.new(0,13), PaddingTop = UDim.new(0,13)})
 			})
 		
 			local cb = b:Create("TextLabel", {
 				Name = "DropdownTitle",
 				FontFace = b.Settings.FontFace or Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Medium, Enum.FontStyle.Normal),
 				Text = an.Title,
-				TextColor3 = Color3.fromRGB(200, 200, 200),
+				TextColor3 = Color3.fromRGB(240,240,240),
 				TextSize = 13,
 				TextXAlignment = Enum.TextXAlignment.Left,
+				BackgroundColor3 = Color3.fromRGB(255,255,255),
 				BackgroundTransparency = 1,
-				Size = UDim2.new(1, 0, 0, 14),
+				BorderColor3 = Color3.fromRGB(0,0,0),
+				Size = UDim2.new(1,0,0,14),
 				Parent = ca
 			})
 		
 			local cc = b:Create("TextButton", {
 				Name = "DropdownOptions",
-				Text = "",
 				FontFace = b.Settings.FontFace or Font.new("rbxasset://fonts/families/SourceSansPro.json"),
+				Text = "",
+				TextColor3 = Color3.fromRGB(0,0,0),
 				TextSize = 14,
-				TextColor3 = Color3.fromRGB(0, 0, 0),
 				AutoButtonColor = false,
-				AnchorPoint = Vector2.new(1, 0.5),
-				BackgroundColor3 = Color3.fromRGB(160, 160, 160),
-				BackgroundTransparency = 0.85,
-				BorderColor3 = Color3.fromRGB(0, 0, 0),
-				Position = UDim2.new(1, -10, 0.5, 0),
-				Size = UDim2.fromOffset(250, 30),
-				Parent = c9
+				AnchorPoint = Vector2.new(1,0.5),
+				BackgroundColor3 = Color3.fromRGB(160,160,160),
+				BackgroundTransparency = 0.9,
+				BorderColor3 = Color3.fromRGB(0,0,0),
+				Position = UDim2.new(1,-10,0.5,0),
+				Size = UDim2.fromOffset(160,30),
+				Parent = c9,
+				AutomaticSize = Enum.AutomaticSize.Y,
+				SizeConstraint = Enum.SizeConstraint.RelativeYY
 			}, {
-				b:Create("UICorner", {CornerRadius = UDim.new(0, 5)}),
-				b:Create("UIStroke", {ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Color = Color3.fromRGB(90, 90, 90), Transparency = 0.5})
+				b:Create("UICorner", {CornerRadius = UDim.new(0,5)}),
+				b:Create("UIStroke", {ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Color = Color3.fromRGB(90,90,90), Transparency = 0.5})
 			})
 		
-			local cd = typeof(an.Default) == "table" and table.concat(an.Default, ", ") or an.Default
+			local cd = typeof(an.Default) == "table" and table.concat(an.Default,", ") or an.Default
 			local ce = b:Create("TextLabel", {
 				Name = "TextLabel",
-				Text = cd,
 				FontFace = b.Settings.FontFace or Font.new("rbxasset://fonts/families/GothamSSm.json"),
-				TextColor3 = Color3.fromRGB(200, 200, 200),
+				Text = cd,
+				TextColor3 = Color3.fromRGB(240,240,240),
 				TextSize = 13,
-				TextXAlignment = Enum.TextXAlignment.Left,
 				TextTruncate = Enum.TextTruncate.AtEnd,
-				AnchorPoint = Vector2.new(0, 0.5),
+				TextXAlignment = Enum.TextXAlignment.Left,
+				AnchorPoint = Vector2.new(0,0.5),
+				BackgroundColor3 = Color3.fromRGB(255,255,255),
 				BackgroundTransparency = 1,
-				Position = UDim2.new(0, 8, 0.5, 0),
-				Size = UDim2.new(1, -30, 0, 14),
+				BorderColor3 = Color3.fromRGB(0,0,0),
+				Position = UDim2.new(0,8,0.5,0),
+				Size = UDim2.new(1,-30,0,14),
+				Parent = cc
+			})
+		
+			local cf = b:Create("ImageLabel", {
+				Name = "ImageLabel",
+				Image = "rbxassetid://10709790948",
+				ImageColor3 = Color3.fromRGB(170,170,170),
+				AnchorPoint = Vector2.new(1,0.5),
+				BackgroundColor3 = Color3.fromRGB(255,255,255),
+				BackgroundTransparency = 1,
+				BorderColor3 = Color3.fromRGB(0,0,0),
+				Rotation = 270,
+				BorderSizePixel = 0,
+				Position = UDim2.new(1,-8,0.5,0),
+				Size = UDim2.fromOffset(16,16),
 				Parent = cc
 			})
 		
 			local cg = b:Create("Frame", {
 				Name = "OptionPopupHolder",
-				BackgroundColor3 = Color3.fromRGB(45, 45, 45),
-				BackgroundTransparency = 0.1,
+				BackgroundColor3 = Color3.fromRGB(255,255,255),
+				BackgroundTransparency = 1,
+				BorderColor3 = Color3.fromRGB(0,0,0),
 				BorderSizePixel = 0,
-				Position = UDim2.fromOffset(0, 30),
-				Size = UDim2.fromOffset(250, 300),
+				Position = UDim2.fromOffset(478,219),
+				Size = UDim2.fromOffset(200,392),
 				Visible = false,
 				ZIndex = 2,
 				Parent = ar
-			}, {b:Create("UICorner", {CornerRadius = UDim.new(0, 6)})})
+			})
 		
-			local searchBox = b:Create("TextBox", {
-				Name = "SearchBox",
-				PlaceholderText = "Search...",
-				FontFace = b.Settings.FontFace or Font.new("rbxasset://fonts/families/GothamSSm.json"),
-				TextSize = 14,
-				TextColor3 = Color3.fromRGB(220, 220, 220),
-				BackgroundColor3 = Color3.fromRGB(70, 70, 70),
+			local bB = b:Create("UISizeConstraint",{Name="UISizeConstraint", MinSize=Vector2.new(170,0), Parent=cg})
+		
+			local ch = b:Create("Frame", {
+				Name="OptionFrame",
+				BackgroundColor3 = Color3.fromRGB(45,45,45),
+				BorderColor3 = Color3.fromRGB(0,0,0),
 				BorderSizePixel = 0,
-				Size = UDim2.new(1, -10, 0, 30),
-				Position = UDim2.fromOffset(5, 5),
+				Size = UDim2.fromScale(1,0.6),
 				Parent = cg
-			}, {b:Create("UICorner", {CornerRadius = UDim.new(0, 6)})})
+			},{
+				b:Create("UICorner",{Name="UICorner", CornerRadius=UDim.new(0,6)}),
+				b:Create("UIStroke",{Name="UIStroke", ApplyStrokeMode=Enum.ApplyStrokeMode.Border, Color=Color3.fromRGB(35,35,35)}),
+				b:Create("ImageLabel",{
+					Name="ImageLabel",
+					Image="http://www.roblox.com/asset/?id=5554236805",
+					ImageColor3=Color3.fromRGB(0,0,0),
+					ImageTransparency=0.1,
+					ScaleType=Enum.ScaleType.Slice,
+					SliceCenter=Rect.new(23,23,277,277),
+					BackgroundColor3=Color3.fromRGB(255,255,255),
+					BackgroundTransparency=1,
+					BorderColor3=Color3.fromRGB(0,0,0),
+					BorderSizePixel=0,
+					Position=UDim2.fromOffset(-15,-15),
+					Size=UDim2.new(1,30,1,30)
+				})
+			})
 		
 			local ci = b:Create("ScrollingFrame", {
-				Name = "OptionScrollingFrame",
-				CanvasSize = UDim2.fromOffset(0, 0),
-				AutomaticCanvasSize = Enum.AutomaticSize.Y,
-				ScrollBarThickness = 4,
-				BackgroundTransparency = 1,
-				BorderSizePixel = 0,
-				Position = UDim2.fromOffset(5, 40),
-				Size = UDim2.new(1, -10, 1, -45),
-				Parent = cg
-			}, {b:Create("UIListLayout", {Padding = UDim.new(0, 3)})})
+				Name="OptionScrollingFrame",
+				BottomImage="rbxassetid://6889812791",
+				CanvasSize=UDim2.fromOffset(0,0),
+				AutomaticCanvasSize=Enum.AutomaticSize.Y,
+				MidImage="rbxassetid://6889812721",
+				ScrollBarImageTransparency=0.95,
+				ScrollBarThickness=4,
+				TopImage="rbxassetid://6276641225",
+				BackgroundColor3=Color3.fromRGB(255,255,255),
+				BackgroundTransparency=1,
+				BorderColor3=Color3.fromRGB(0,0,0),
+				BorderSizePixel=0,
+				Position=UDim2.fromOffset(5,5),
+				Size=UDim2.new(1,-5,1,-10),
+				Parent=ch
+			},{
+				b:Create("UIListLayout",{Name="UIListLayout", Padding=UDim.new(0,3)})
+			})
 		
-			-- Filter function
-			searchBox:GetPropertyChangedSignal("Text"):Connect(function()
-				local query = string.lower(searchBox.Text)
-				for _, option in pairs(c7.Options) do
-					option.Option.Visible = string.find(string.lower(option.Option.OptionLabel.Text), query) ~= nil
-				end
-			end)
+			local cj = b:Create("UIGradient", {
+				Name="DropdownGradient",
+				Rotation=90,
+				Color=ColorSequence.new({
+					ColorSequenceKeypoint.new(0,b.Themes.BackgroundColor),
+					ColorSequenceKeypoint.new(1,c:LightenColor(b.Themes.BackgroundColor,0.5))
+				}),
+				Parent=ch
+			})
 		
-			-- Function Add
-			function c7:Add(value, selected)
-				local selected = selected or false
-				local optionBtn = b:Create("TextButton", {
-					Name = "Option",
-					Text = "",
-					FontFace = b.Settings.FontFace or Font.new("rbxasset://fonts/families/SourceSansPro.json"),
-					TextSize = 14,
-					TextColor3 = Color3.fromRGB(0, 0, 0),
-					AutoButtonColor = false,
-					BackgroundColor3 = Color3.fromRGB(80, 80, 80),
-					BackgroundTransparency = selected and 0.85 or 0.95,
-					Size = UDim2.new(1, -5, 0, 32),
-					ZIndex = 23,
-					Parent = ci
-				}, {b:Create("UICorner", {CornerRadius = UDim.new(0, 6)})})
+			table.insert(b.Storage.DropdownGradient,cj)
 		
-				local selFrame = b:Create("Frame", {
-					Name = "Selected",
-					AnchorPoint = Vector2.new(0, 0.5),
-					BackgroundColor3 = Color3.fromRGB(180, 180, 180),
-					BorderSizePixel = 0,
-					Position = UDim2.fromOffset(-1, 16),
-					Size = UDim2.fromOffset(4, 14),
-					Visible = selected,
-					Parent = optionBtn
+			-- ฟังก์ชันสำหรับ Add Option
+			function c7:Add(ck,cl)
+				local ck=ck or "OptionValue"
+				local cl=cl or false
+				local cm=b:Create("TextButton",{
+					Name="Option",
+					FontFace=b.Settings.FontFace or Font.new("rbxasset://fonts/families/SourceSansPro.json"),
+					Text="",
+					TextColor3=Color3.fromRGB(0,0,0),
+					TextSize=14,
+					AutoButtonColor=false,
+					BackgroundColor3=Color3.fromRGB(120,120,120),
+					BackgroundTransparency=cl and 0.9 or 1,
+					BorderColor3=Color3.fromRGB(0,0,0),
+					Size=UDim2.new(1,-5,0,32),
+					ZIndex=23,
+					Parent=ci
+				},{b:Create("UICorner",{Name="UICorner", CornerRadius=UDim.new(0,6)})})
+		
+				local cn=b:Create("Frame",{
+					Name="Selected",
+					AnchorPoint=Vector2.new(0,0.5),
+					BackgroundColor3=b.Themes.BackgroundColor,
+					BorderColor3=Color3.fromRGB(0,0,0),
+					BorderSizePixel=0,
+					Position=UDim2.fromOffset(-1,16),
+					Size=UDim2.fromOffset(4,14),
+					Visible=cl,
+					Parent=cm
 				})
-				b:Create("UICorner", {CornerRadius = UDim.new(0, 2), Parent = selFrame})
+				b:Create("UICorner",{Name="UICorner", CornerRadius=UDim.new(0,2), Parent=cn})
+				table.insert(b.Storage.Selected,cn)
+				table.insert(c7.Options,{Selected=cn, Option=cm})
 		
-				local lbl = b:Create("TextLabel", {
-					Name = "OptionLabel",
-					Text = value,
-					FontFace = b.Settings.FontFace or Font.new("rbxasset://fonts/families/GothamSSm.json"),
-					TextColor3 = Color3.fromRGB(220, 220, 220),
-					TextSize = 13,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					BackgroundTransparency = 1,
-					AutomaticSize = Enum.AutomaticSize.Y,
-					Position = UDim2.fromOffset(10, 0),
-					Size = UDim2.fromScale(1, 1),
-					Parent = optionBtn
+				local co=b:Create("TextLabel",{
+					Name="OptionLabel",
+					FontFace=b.Settings.FontFace or Font.new("rbxasset://fonts/families/GothamSSm.json"),
+					Text=ck,
+					TextColor3=Color3.fromRGB(240,240,240),
+					TextSize=13,
+					TextXAlignment=Enum.TextXAlignment.Left,
+					AutomaticSize=Enum.AutomaticSize.Y,
+					BackgroundColor3=Color3.fromRGB(255,255,255),
+					BackgroundTransparency=1,
+					BorderColor3=Color3.fromRGB(0,0,0),
+					Position=UDim2.fromOffset(10,0),
+					Size=UDim2.fromScale(1,1),
+					Parent=cm
 				})
 		
-				table.insert(c7.Options, {Option = optionBtn, Selected = selFrame})
-		
-				b:Connect(optionBtn.Activated, function()
+				-- Event เมื่อเลือก option
+				b:Connect(cm.Activated,function()
 					if an.Multi then
-						if table.find(an.Default, value) then
-							table.remove(an.Default, table.find(an.Default, value))
+						if table.find(an.Default,ck) then
+							table.remove(an.Default,table.find(an.Default,ck))
 						else
-							table.insert(an.Default, value)
+							table.insert(an.Default,ck)
 						end
-						selFrame.Visible = table.find(an.Default, value) ~= nil
-						optionBtn.BackgroundTransparency = selFrame.Visible and 0.85 or 0.95
+						c:Thread(function()
+							cn.Visible = type(an.Default)=="table" and table.find(an.Default,ck) or an.Default==ck
+							c:Animation(cm,{BackgroundTransparency=table.find(an.Default,ck) and 0.9 or 1},b.AnimationSpeed,b.EasingStyle.Quad,b.EasingDirection.Out)
+						end)
 					else
-						an.Default = value
-						for _, opt in pairs(c7.Options) do
-							opt.Selected.Visible = false
-							opt.Option.BackgroundTransparency = 0.95
-						end
-						selFrame.Visible = true
-						optionBtn.BackgroundTransparency = 0.85
+						an.Default=ck
+						c:Thread(function()
+							for q,r in pairs(c7.Options) do
+								r.Selected.Visible=false
+								c:Animation(r.Option,{BackgroundTransparency=1},b.AnimationSpeed,b.EasingStyle.Quad,b.EasingDirection.Out)
+							end
+							cn.Visible = type(an.Default)=="table" and table.find(an.Default,ck) or an.Default==ck
+							c:Animation(cm,{BackgroundTransparency=0.9},b.AnimationSpeed,b.EasingStyle.Quad,b.EasingDirection.Out)
+						end)
 					end
-					if an.Flags then b.Flags[tostring(an.Flags)] = an.Default end
-					ce.Text = typeof(an.Default) == "table" and table.concat(an.Default, ", ") or an.Default
+					if an.Flags then b.Flags[tostring(an.Flags)]=an.Default end
+					ce.Text = typeof(an.Default)=="table" and table.concat(an.Default,", ") or an.Default
 					if c7.Callback then c7.Callback(an.Default) end
 				end)
 			end
 		
-			-- Add default options
-			for _, val in pairs(an.Values) do
-				c7:Add(val, typeof(an.Default) == "table" and table.find(an.Default, val) or an.Default == val)
+			-- Add ค่าเริ่มต้น
+			for q,r in pairs(an.Values) do
+				c7:Add(r,typeof(an.Default)=="table" and table.find(an.Default,r) or an.Default==r)
 			end
 		
-			-- Open/Close Dropdown
-			b:Connect(cc.Activated, function()
-				c7.Expanded = not c7.Expanded
-				cg.Visible = c7.Expanded
-			end)
+			if an.Flags then b.Flags[tostring(an.Flags)] = an.Default end
 		
+			-- ฟังก์ชันเพิ่มเติม
 			function c7:Hide()
-				c7.Expanded = false
-				cg.Visible = false
+				c7.Expanded=false
+				cg.Visible=false
+				bk.ScrollingEnabled=true
 			end
 		
-			function c7:SetValues(values, default)
-				c7.Options = {}
-				for _, child in pairs(ci:GetChildren()) do
-					if child:IsA("TextButton") then child:Destroy() end
+			function c7:SetValues(cq,cl)
+				local cq=cq or {}
+				local cl=typeof(cl)=="table" and cl or cl
+				c7.Options={}
+				for q,r in pairs(ci:GetChildren()) do if r:IsA("TextButton") then r:Destroy() end end
+				an.Values=cq
+				an.Default=cl
+				for q,r in pairs(cq) do
+					c7:Add(r,typeof(cl)=="table" and table.find(cl,r) or cl==r)
 				end
-				an.Values = values or {}
-				an.Default = default or {}
-				for _, val in pairs(an.Values) do
-					c7:Add(val, typeof(an.Default) == "table" and table.find(an.Default, val) or an.Default == val)
-				end
-				ce.Text = typeof(an.Default) == "table" and table.concat(an.Default, ", ") or an.Default
-				if an.Flags then b.Flags[tostring(an.Flags)] = an.Default end
-				if c7.Callback then c7.Callback(an.Default) end
+				ce.Text = typeof(cl)=="table" and table.concat(cl,", ") or cl
+				if an.Flags then b.Flags[tostring(an.Flags)]=an.Default end
+				if c7.Callback then c7.Callback(cl) end
 			end
 		
-			function c7:OnChanged(func)
-				c7.Callback = func
+			function c7:OnChanged(c6)
+				c7.Callback=c6
 				return c7
 			end
 		
-			table.insert(b.Elements.Dropdowns, c7)
+			-- Event เปิด/ปิด Dropdown
+			b:Connect(cc.Activated,function()
+				c7.Expanded = not c7.Expanded
+				if c7.Expanded then
+					for q,r in pairs(b.Elements.Dropdowns) do if r~=c7 then r:Hide() end end
+					bk.ScrollingEnabled=false
+					local cr = cc.AbsolutePosition
+					cg.Position = not b.Maximized and UDim2.fromOffset(cr.X,cr.Y) or UDim2.fromOffset(cr.X,cr.Y)
+					c:Animation(cg,{Visible=true},b.AnimationSpeed,b.EasingStyle.Quad,b.EasingDirection.Out)
+				else
+					bk.ScrollingEnabled=true
+					c:Animation(cg,{Visible=false},b.AnimationSpeed,b.EasingStyle.Quad,b.EasingDirection.Out)
+				end
+			end)
+		
 			return c7
 		end
 		
