@@ -3213,7 +3213,7 @@ function b:Window(t)
 				}
 			)
 		
-			-- Popup Holder
+			-- Option Popup Holder
 			local cg = b:Create(
 				"Frame",
 				{
@@ -3229,7 +3229,6 @@ function b:Window(t)
 					Parent = ar
 				}
 			)
-		
 			b:Create("UISizeConstraint", {Name = "UISizeConstraint", MinSize = Vector2.new(170, 0), Parent = cg})
 		
 			local ch = b:Create(
@@ -3269,7 +3268,7 @@ function b:Window(t)
 				}
 			)
 		
-			-- Scrolling Frame for Options
+			-- Scrolling Frame
 			local ci = b:Create(
 				"ScrollingFrame",
 				{
@@ -3286,6 +3285,7 @@ function b:Window(t)
 				{b:Create("UIListLayout", {Padding = UDim.new(0, 3)})}
 			)
 		
+			-- Add Options
 			function c7:Add(ck, cl)
 				local ck = ck or "OptionValue"
 				local cl = cl or false
@@ -3329,10 +3329,23 @@ function b:Window(t)
 				b:Connect(
 					cm.Activated,
 					function()
-						an.Default = ck
-						ce.Text = ck
-						c7.Expanded = false
-						cg.Visible = false
+						if an.Multi then
+							if table.find(an.Default, ck) then
+								table.remove(an.Default, table.find(an.Default, ck))
+							else
+								table.insert(an.Default, ck)
+							end
+						else
+							an.Default = ck
+							for _, r in pairs(c7.Options) do
+								r.Option.BackgroundTransparency = 0
+							end
+							cm.BackgroundTransparency = 0.9
+						end
+						ce.Text = typeof(an.Default) == "table" and table.concat(an.Default, ", ") or an.Default
+						if an.Flags then
+							b.Flags[tostring(an.Flags)] = an.Default
+						end
 						if c7.Callback then
 							c7.Callback(an.Default)
 						end
@@ -3340,10 +3353,12 @@ function b:Window(t)
 				)
 			end
 		
+			-- Add initial options
 			for _, r in pairs(an.Values) do
 				c7:Add(r, typeof(an.Default) == "table" and table.find(an.Default, r) or an.Default == r)
 			end
 		
+			-- Dropdown Button click
 			b:Connect(
 				cc.Activated,
 				function()
@@ -3351,7 +3366,8 @@ function b:Window(t)
 					cg.Visible = c7.Expanded
 				end
 			)
-	
+		
+			-- Search filter
 			b:Connect(
 				SearchBox:GetPropertyChangedSignal("Text"),
 				function()
@@ -3368,6 +3384,7 @@ function b:Window(t)
 		
 			return c7
 		end
+		
 		
 		function bi:AddSlider(t)
 			local cs = {Holding = false, Callback = function()
