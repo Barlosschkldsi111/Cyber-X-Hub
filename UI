@@ -2890,17 +2890,17 @@ function b:Window(t)
 					}
 				)
 			end
-			local bL = bY.TextBounds.Y
-			bY.Size = UDim2.new(1, -54, 0, bL)
-			local bZ = c:LightenColor(b.Themes.BackgroundColor, 0.5)
-			local b_ = c:LightenColor(b.Themes.BackgroundColor, 0.25)
+			local bL = bY.TextBounds.Y or 0
+			bY.Size = UDim2.new(1, -54, 0, bL > 0 and bL or 14)
+			local bZ = c:LightenColor(b.Themes.BackgroundColor or Color3.fromRGB(30,30,30), 0.5)
+			local b_ = c:LightenColor(b.Themes.BackgroundColor or Color3.fromRGB(30,30,30), 0.25)
 			local c0 =
 				b:Create(
 				"Frame",
 				{
 					AnchorPoint = Vector2.new(1, 0.5),
 					BackgroundColor3 = bZ,
-					BackgroundTransparency = an.Default and 0.5 or 1,
+					BackgroundTransparency = (an.Default == true) and 0.5 or 1,
 					BorderColor3 = Color3.fromRGB(0, 0, 0),
 					BorderSizePixel = 0,
 					Position = UDim2.new(1, -10, 0.5, 0),
