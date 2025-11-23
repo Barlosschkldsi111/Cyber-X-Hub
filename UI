@@ -2747,28 +2747,30 @@ function b:Window(t)
 					Parent = bP
 				}
 			)
-			local bL = bS.TextBounds.Y
-			local bM = bR.TextBounds.Y
-			bR.Size = UDim2.new(1, 0, 0, bM)
-			bS.Size = UDim2.new(1, 0, 0, bL)
-			function bO:Update()
+			if bS then 
 				local bL = bS.TextBounds.Y
 				local bM = bR.TextBounds.Y
 				bR.Size = UDim2.new(1, 0, 0, bM)
 				bS.Size = UDim2.new(1, 0, 0, bL)
-			end
-			function bO:Set(t)
-				local t = t or {}
-				local an = {
-					Title = t.title or t.Title or "Button",
-					Description = t.description or t.Description or t.desc or t.Desc or nil,
-					Callback = t.callback or t.Callback or function()
-						end
-				}
-				bR.Text = an.Title
-				bS.Text = an.Description
-				bO.Callback = an.Callback
-				bO:Update()
+				function bO:Update()
+					local bL = bS.TextBounds.Y
+					local bM = bR.TextBounds.Y
+					bR.Size = UDim2.new(1, 0, 0, bM)
+					bS.Size = UDim2.new(1, 0, 0, bL)
+				end
+				function bO:Set(t)
+					local t = t or {}
+					local an = {
+						Title = t.title or t.Title or "Button",
+						Description = t.description or t.Description or t.desc or t.Desc or nil,
+						Callback = t.callback or t.Callback or function()
+							end
+					}
+					bR.Text = an.Title
+					bS.Text = an.Description
+					bO.Callback = an.Callback
+					bO:Update()
+				end
 			end
 			b:Connect(
 				bP.Activated,
