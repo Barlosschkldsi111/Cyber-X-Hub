@@ -2336,7 +2336,7 @@ function p:Window(_)
 				BackgroundTransparency = 1,
 				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				Size = UDim2.new(1, 0, 0, 14),
-				Visible = e.Description,
+				Visible = e.Description or false,
 				Name = "ButtonDesc",
 				Parent = _,
 			})
@@ -2472,7 +2472,7 @@ function p:Window(_)
 					BackgroundTransparency = 1,
 					BorderColor3 = Color3.fromRGB(0, 0, 0),
 					Size = UDim2.new(1, -54, 0, 14),
-					Visible = j.Description and true or false,
+					Visible = j.Description or false,
 					Name = "ToggleDesc",
 					Parent = _,
 				})
@@ -2751,7 +2751,7 @@ function p:Window(_)
 					BackgroundTransparency = 1,
 					BorderColor3 = Color3.fromRGB(0, 0, 0),
 					Size = UDim2.new(0.592, -54, 0, 14),
-					Visible = i.Description and true or false,
+					Visible = i.Description or false,
 					Name = "DropdownDesc",
 					Parent = b,
 				})
@@ -3218,7 +3218,7 @@ function p:Window(_)
 				Size = UDim2.new(1, -170, 0, 14),
 				Parent = a,
 			})
-			_.Visible = h.Description 
+			_.Visible = h.Description or false 
 			local _ = p:Create("Frame", {
 				Name = "Slider",
 				AnchorPoint = Vector2.new(1, 0.5),
