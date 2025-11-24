@@ -2794,7 +2794,8 @@ function p:Window(_)
 				BackgroundColor3 = Color3.fromRGB(45, 45, 45),
 				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				BorderSizePixel = 0,
-				Size = UDim2.fromOffset(250, 350),
+				Transparency = 0.5
+				Size = UDim2.fromOffset(300, 350),
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				Position = UDim2.fromScale(0.5, 0.5),
 				Parent = f,
