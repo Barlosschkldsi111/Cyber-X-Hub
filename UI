@@ -2794,7 +2794,7 @@ function p:Window(_)
 				BackgroundColor3 = Color3.fromRGB(219, 191, 191),
 				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				BorderSizePixel = 0,
-				Size = UDim2.fromScale(3, 1),
+				Size = UDim2.fromScale(1.5, 1.5),
 				Parent = f,
 			}, {
 				p:Create("UICorner", { Name = "UICorner", CornerRadius = UDim.new(0, 6) }),
