@@ -2792,7 +2792,7 @@ function p:Window(_)
 			local a = p:Create("Frame", {
 				Name = "OptionFrame",
 				BackgroundColor3 = Color3.fromRGB(45, 45, 45),
-				BackgroundTransparency = 0.7,
+				BackgroundTransparency = 0.2,
 				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				BorderSizePixel = 0,
 				Size = UDim2.fromOffset(250, 350),
@@ -2831,7 +2831,7 @@ function p:Window(_)
 				Text = "",
 				PlaceholderText = "Search",
 				TextColor3 = Color3.fromRGB(240, 240, 240),
-				PlaceholderColor3 = Color3.fromRGB(140, 140, 140),
+				PlaceholderColor3 = Color3.fromRGB(0, 0, 0),
 				TextSize = 13,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				BackgroundColor3 = Color3.fromRGB(60, 60, 60),
