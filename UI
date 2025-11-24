@@ -2834,7 +2834,7 @@ function p:Window(_)
 				PlaceholderColor3 = Color3.fromRGB(247, 243, 243),
 				TextSize = 13,
 				TextXAlignment = Enum.TextXAlignment.Left,
-				BackgroundColor3 = Color3.fromRGB(18, 1, 1),
+				BackgroundColor3 = Color3.fromRGB(0, 0, 0),
 				BackgroundTransparency = 0.2,
 				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				Size = UDim2.new(1, -10, 0, 30),
