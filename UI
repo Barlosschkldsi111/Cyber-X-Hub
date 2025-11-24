@@ -2792,7 +2792,7 @@ function p:Window(_)
 			local a = p:Create("Frame", {
 				Name = "OptionFrame",
 				BackgroundColor3 = Color3.fromRGB(45, 45, 45),
-				BackgroundTransparency = 0.5,
+				BackgroundTransparency = 0.7,
 				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				BorderSizePixel = 0,
 				Size = UDim2.fromOffset(250, 350),
@@ -2825,19 +2825,17 @@ function p:Window(_)
 				}),
 			
 			})
-
-			-- Add search box
 			local searchBox = p:Create("TextBox", {
 				Name = "SearchBox",
 				FontFace = p.Settings.FontFace or Font.new("rbxasset://fonts/families/GothamSSm.json"),
 				Text = "",
-				PlaceholderText = "Search...",
+				PlaceholderText = "Search",
 				TextColor3 = Color3.fromRGB(240, 240, 240),
 				PlaceholderColor3 = Color3.fromRGB(140, 140, 140),
 				TextSize = 13,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				BackgroundColor3 = Color3.fromRGB(60, 60, 60),
-				BackgroundTransparency = 0.5,
+				BackgroundTransparency = 0.2,
 				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				Size = UDim2.new(1, -10, 0, 30),
 				Position = UDim2.new(0, 5, 0, 5),
@@ -2853,7 +2851,7 @@ function p:Window(_)
 				CanvasSize = UDim2.fromOffset(0, 0),
 				AutomaticCanvasSize = Enum.AutomaticSize.Y,
 				MidImage = "rbxassetid://6889812721",
-				ScrollBarImageTransparency = 0.95,
+				ScrollBarImageTransparency = 0.5,
 				ScrollBarThickness = 4,
 				TopImage = "rbxassetid://6276641225",
 				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
