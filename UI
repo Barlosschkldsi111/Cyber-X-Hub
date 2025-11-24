@@ -2791,10 +2791,10 @@ function p:Window(_)
 			})
 			local a = p:Create("Frame", {
 				Name = "OptionFrame",
-				BackgroundColor3 = Color3.fromRGB(219, 191, 191),
+				BackgroundColor3 = Color3.fromRGB(45, 45, 45),
 				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				BorderSizePixel = 0,
-				Size = UDim2.fromScale(1.5, 1.5),
+				Size = UDim2.new(1, 250, 1, 0),
 				Parent = f,
 			}, {
 				p:Create("UICorner", { Name = "UICorner", CornerRadius = UDim.new(0, 6) }),
