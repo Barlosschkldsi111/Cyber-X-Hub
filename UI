@@ -3140,8 +3140,10 @@ function p:Window(_)
 				Flags = _.flags or _.Flags or _.pointer or _.Pointer or _.flag or _.Flag or false,
 				Sections = _.sections or _.Sections or false,
 			}
-			local _ = h.Sections and h.Sections or g
-			local b = p:Create("TextButton", {
+		
+			local parentSection = h.Sections and h.Sections or g
+		
+			local sliderHolder = p:Create("TextButton", {
 				Name = "SliderHolder",
 				FontFace = p.Settings.FontFace or Font.new("rbxasset://fonts/families/SourceSansPro.json"),
 				Text = "",
@@ -3155,7 +3157,7 @@ function p:Window(_)
 				LayoutOrder = 7,
 				Size = UDim2.fromScale(1, 0),
 				Visible = true,
-				Parent = _,
+				Parent = parentSection,
 			}, {
 				p:Create("UICorner", { Name = "UICorner", CornerRadius = UDim.new(0, 4) }),
 				p:Create("UIStroke", {
@@ -3164,7 +3166,8 @@ function p:Window(_)
 					Color = Color3.fromRGB(35, 35, 35),
 				}),
 			})
-			local a = p:Create("Frame", {
+		
+			local sliderFrame = p:Create("Frame", {
 				Name = "SliderFrame",
 				AutomaticSize = Enum.AutomaticSize.Y,
 				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
@@ -3173,7 +3176,7 @@ function p:Window(_)
 				BorderSizePixel = 0,
 				Position = UDim2.fromOffset(10, 0),
 				Size = UDim2.new(1, -28, 0, 0),
-				Parent = b,
+				Parent = sliderHolder,
 			}, {
 				p:Create("UIListLayout", {
 					Name = "UIListLayout",
@@ -3181,12 +3184,10 @@ function p:Window(_)
 					SortOrder = Enum.SortOrder.LayoutOrder,
 					Padding = UDim.new(0, 5),
 				}),
-				p:Create(
-					"UIPadding",
-					{ Name = "UIPadding", PaddingBottom = UDim.new(0, 13), PaddingTop = UDim.new(0, 13) }
-				),
+				p:Create("UIPadding", { Name = "UIPadding", PaddingBottom = UDim.new(0, 13), PaddingTop = UDim.new(0, 13) }),
 			})
-			local _ = p:Create("TextLabel", {
+		
+			local sliderTitle = p:Create("TextLabel", {
 				Name = "SliderTitle",
 				FontFace = p.Settings.FontFace or Font.new(
 					"rbxasset://fonts/families/GothamSSm.json",
@@ -3201,25 +3202,33 @@ function p:Window(_)
 				BackgroundTransparency = 1,
 				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				Size = UDim2.new(1, 0, 0, 14),
-				Parent = a,
+				Parent = sliderFrame,
 			})
-			local _ = p:Create("TextLabel", {
-				Name = "SliderDesc",
-				FontFace = p.Settings.FontFace or Font.new("rbxasset://fonts/families/GothamSSm.json"),
-				Text = h.Description,
-				TextColor3 = Color3.fromRGB(170, 170, 170),
-				TextSize = 12,
-				TextWrapped = true,
-				TextXAlignment = Enum.TextXAlignment.Left,
-				AutomaticSize = Enum.AutomaticSize.Y,
-				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-				BackgroundTransparency = 1,
-				BorderColor3 = Color3.fromRGB(0, 0, 0),
-				Size = UDim2.new(1, -170, 0, 14),
-				Parent = a,
-			})
-			_.Visible = h.Description or false 
-			local _ = p:Create("Frame", {
+		
+			------------------------------------
+			-- ✅ สร้าง Description เฉพาะเมื่อไม่เป็น false / nil / ""
+			------------------------------------
+			local sliderDesc = nil
+			if h.Description and h.Description ~= false and h.Description ~= "" then
+				sliderDesc = p:Create("TextLabel", {
+					Name = "SliderDesc",
+					FontFace = p.Settings.FontFace or Font.new("rbxasset://fonts/families/GothamSSm.json"),
+					Text = h.Description,
+					TextColor3 = Color3.fromRGB(170, 170, 170),
+					TextSize = 12,
+					TextWrapped = true,
+					TextXAlignment = Enum.TextXAlignment.Left,
+					AutomaticSize = Enum.AutomaticSize.Y,
+					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+					BackgroundTransparency = 1,
+					BorderColor3 = Color3.fromRGB(0, 0, 0),
+					Size = UDim2.new(1, -170, 0, 14),
+					Parent = sliderFrame,
+				})
+			end
+			------------------------------------
+		
+			local sliderMain = p:Create("Frame", {
 				Name = "Slider",
 				AnchorPoint = Vector2.new(1, 0.5),
 				BackgroundColor3 = Color3.fromRGB(120, 120, 120),
@@ -3228,12 +3237,13 @@ function p:Window(_)
 				BorderSizePixel = 0,
 				Position = UDim2.new(1, -10, 0.5, 0),
 				Size = UDim2.new(1, 0, 0, 4),
-				Parent = b,
+				Parent = sliderHolder,
 			}, {
 				p:Create("UICorner", { Name = "UICorner", CornerRadius = UDim.new(1, 0) }),
 				p:Create("UISizeConstraint", { Name = "UISizeConstraint", MaxSize = Vector2.new(150, math.huge) }),
 			})
-			local b = p:Create("TextBox", {
+		
+			local sliderText = p:Create("TextBox", {
 				Name = "SliderText",
 				FontFace = p.Settings.FontFace or Font.new("rbxasset://fonts/families/GothamSSm.json"),
 				Text = h.Default,
@@ -3247,22 +3257,25 @@ function p:Window(_)
 				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				Position = UDim2.new(0, -4, 0.5, 0),
 				Size = UDim2.fromOffset(100, 14),
-				Parent = _,
+				Parent = sliderMain,
 			})
-			local a = math.clamp(h.Default / h.Max, 0, 1)
-			a = a ~= a and 0 or a
-			a = math.floor(a / h.Decimal) * h.Decimal
-			local c = p:Create("Frame", {
+		
+			local percent = math.clamp(h.Default / h.Max, 0, 1)
+			percent = percent ~= percent and 0 or percent
+			percent = math.floor(percent / h.Decimal) * h.Decimal
+		
+			local sliderValue = p:Create("Frame", {
 				Name = "SliderValue",
 				BackgroundColor3 = p.Themes.BackgroundColor,
 				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				BorderSizePixel = 0,
-				Size = UDim2.fromScale(a, 1),
-				Parent = _,
+				Size = UDim2.fromScale(percent, 1),
+				Parent = sliderMain,
 			})
-			p:Create("UICorner", { Name = "UICorner", CornerRadius = UDim.new(1, 0), Parent = c })
-			table.insert(p.Storage.SliderValue, c)
-			local _ = p:Create("Frame", {
+			p:Create("UICorner", { Name = "UICorner", CornerRadius = UDim.new(1, 0), Parent = sliderValue })
+			table.insert(p.Storage.SliderValue, sliderValue)
+		
+			local maxFrame = p:Create("Frame", {
 				Name = "SliderMaxValue",
 				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 				BackgroundTransparency = 1,
@@ -3270,96 +3283,102 @@ function p:Window(_)
 				BorderSizePixel = 0,
 				Position = UDim2.fromOffset(7, 0),
 				Size = UDim2.new(1, -14, 1, 0),
-				Parent = _,
+				Parent = sliderMain,
 			})
-			local d = p:Create("ImageLabel", {
+		
+			local sliderImage = p:Create("ImageLabel", {
 				Name = "SliderImage",
 				Image = "http://www.roblox.com/asset/?id=12266946128",
 				ImageColor3 = p.Themes.BackgroundColor,
 				AnchorPoint = Vector2.new(0, 0.5),
 				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 				BackgroundTransparency = 1,
-				BorderColor3 = Color3.fromRGB(0, 0, 0),
-				BorderSizePixel = 0,
-				Position = UDim2.new(a, -7, 0.5, 0),
+				Position = UDim2.new(percent, -7, 0.5, 0),
 				Size = UDim2.fromOffset(14, 14),
-				Parent = _,
+				Parent = sliderMain,
 			})
-			table.insert(p.Storage.SliderImage, d)
-			p:Connect(d.InputBegan, function(a, _)
-				if
-					a.UserInputType == Enum.UserInputType.MouseButton1
-					or a.UserInputType == Enum.UserInputType.Touch and not _
-				then
+			table.insert(p.Storage.SliderImage, sliderImage)
+		
+			p:Connect(sliderImage.InputBegan, function(a, _)
+				if a.UserInputType == Enum.UserInputType.MouseButton1 or a.UserInputType == Enum.UserInputType.Touch and not _ then
 					f.Holding = true
 				end
 			end)
-			p:Connect(d.InputEnded, function(a, _)
+		
+			p:Connect(sliderImage.InputEnded, function(a, _)
 				if a.UserInputType == Enum.UserInputType.MouseButton1 and not _ then
 					f.Holding = false
 				end
 			end)
+		
 			p:Connect(l.TouchEnded, function(a, _)
 				if f.Holding and a.UserInputType == Enum.UserInputType.Touch then
 					f.Holding = false
 				end
 			end)
+		
 			if h.Flags then
 				p.Flags[tostring(h.Flags)] = h.Default
 			end
-			function f:OnChanged(_)
-				f.Callback = _
+		
+			function f:OnChanged(cb)
+				f.Callback = cb
 				if f.Callback then
 					f.Callback(h.Default)
 				end
 				return f
 			end
-			function f:SetValue(e, a)
-				e = math.clamp(math.round(e / h.Decimal) * h.Decimal, h.Min, h.Max)
-				e = math.floor(e / h.Decimal) * h.Decimal
-				e = o:Decimal(e, h.Decimal)
-				local _ = UDim2.new((e - h.Min) / (h.Max - h.Min), -7, 0.5, 0)
-				o:Animation(d, { Position = _ }, p.AnimationSpeed, p.EasingStyle.Quad, p.EasingDirection.Out)
+		
+			function f:SetValue(v, bypass)
+				v = math.clamp(math.round(v / h.Decimal) * h.Decimal, h.Min, h.Max)
+				v = math.floor(v / h.Decimal) * h.Decimal
+				v = o:Decimal(v, h.Decimal)
+		
+				local pos = UDim2.new((v - h.Min) / (h.Max - h.Min), -7, 0.5, 0)
+				o:Animation(sliderImage, { Position = pos }, p.AnimationSpeed, p.EasingStyle.Quad, p.EasingDirection.Out)
+		
 				o:Animation(
-					c,
-					{ Size = UDim2.fromScale((e - h.Min) / (h.Max - h.Min), 1) },
+					sliderValue,
+					{ Size = UDim2.fromScale((v - h.Min) / (h.Max - h.Min), 1) },
 					p.AnimationSpeed,
 					p.EasingStyle.Quad,
 					p.EasingDirection.Out
 				)
-				if not a then
-					h.Default = e
+		
+				if not bypass then
+					h.Default = v
 				end
-				b.Text = tostring(e)
+		
+				sliderText.Text = tostring(v)
+		
 				if h.Flags then
-					p.Flags[tostring(h.Flags)] = e
+					p.Flags[tostring(h.Flags)] = v
 				end
+		
 				if f.Callback then
-					f.Callback(e)
+					f.Callback(v)
 				end
 			end
+		
 			if h.Default then
 				f:SetValue(h.Default)
 			end
-			p:Connect(b.FocusLost, function()
-				local _ = tonumber(b.Text) or h.Min
-				f:SetValue(_, true)
+		
+			p:Connect(sliderText.FocusLost, function()
+				local v = tonumber(sliderText.Text) or h.Min
+				f:SetValue(v, true)
 			end)
-			p:Connect(l.InputChanged, function(_)
-				if
-					f.Holding
-					and (
-						_.UserInputType == Enum.UserInputType.MouseMovement
-						or _.UserInputType == Enum.UserInputType.Touch
-					)
-				then
-					local a = d.Parent.AbsoluteSize.X
-					local _ = _.Position.X - d.Parent.AbsolutePosition.X
-					local _ = math.clamp((_ - 7) / a, 0, 1)
-					local _ = h.Min + (h.Max - h.Min) * _
-					f:SetValue(_)
+		
+			p:Connect(l.InputChanged, function(a)
+				if f.Holding and (a.UserInputType == Enum.UserInputType.MouseMovement or a.UserInputType == Enum.UserInputType.Touch) then
+					local sizeX = sliderImage.Parent.AbsoluteSize.X
+					local posX = a.Position.X - sliderImage.Parent.AbsolutePosition.X
+					local percent = math.clamp((posX - 7) / sizeX, 0, 1)
+					local newValue = h.Min + (h.Max - h.Min) * percent
+					f:SetValue(newValue)
 				end
 			end)
+		
 			return f
 		end
 		function h:AddInput(_)
