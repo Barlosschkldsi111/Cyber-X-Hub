@@ -2792,20 +2792,26 @@ function p:Window(_)
 			local a = p:Create("Frame", {
 				Name = "OptionFrame",
 				BackgroundColor3 = Color3.fromRGB(45, 45, 45),
+				BackgroundTransparency = 0.5,
 				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				BorderSizePixel = 0,
-				Transparency = 0.5
-				Size = UDim2.fromOffset(300, 350),
-				AnchorPoint = Vector2.new(0.5, 0.5),
-				Position = UDim2.fromScale(0.5, 0.5),
+				Size = UDim2.fromOffset(250, 350),
+				AnchorPoint = Vector2.new(0.5, 0.5), 
+				Position = UDim2.fromScale(0.5, 0.5), 
+				AutomaticSize = Enum.AutomaticSize.None,
+				LayoutOrder = 0,
+			
 				Parent = f,
 			}, {
+			
 				p:Create("UICorner", { Name = "UICorner", CornerRadius = UDim.new(0, 6) }),
+			
 				p:Create("UIStroke", {
 					Name = "UIStroke",
 					ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 					Color = Color3.fromRGB(35, 35, 35),
 				}),
+			
 				p:Create("ImageLabel", {
 					Name = "ImageLabel",
 					Image = "http://www.roblox.com/asset/?id=5554236805",
@@ -2813,13 +2819,11 @@ function p:Window(_)
 					ImageTransparency = 0.1,
 					ScaleType = Enum.ScaleType.Slice,
 					SliceCenter = Rect.new(23, 23, 277, 277),
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 					BackgroundTransparency = 1,
-					BorderColor3 = Color3.fromRGB(0, 0, 0),
-					BorderSizePixel = 0,
 					Position = UDim2.fromOffset(-15, -15),
 					Size = UDim2.new(1, 30, 1, 30),
 				}),
+			
 			})
 
 			-- Add search box
