@@ -2386,58 +2386,59 @@ function p:Window(_)
 			end)
 			return c
 		end
-		function h:AddToggle(_)
+		function h:AddToggle(t)
 			local i = { Callback = function() end }
-			local _ = _ or {}
+			local t = t or {}
+		
 			local j = {
-				Title = _.title or _.Title or "Toggle",
-				Description = _.description or _.Description or _.desc or _.Descm or false,
-				Default = _.default or _.Default or false,
-				Flags = _.flags or _.Flags or _.pointer or _.Pointer or _.flag or _.Flag or false,
-				Sections = _.sections or _.Sections or false,
+				Title = t.title or t.Title or "Toggle",
+				Description = t.description or t.Description or t.desc or t.Desc or false,
+				Default = t.default or t.Default or false,
+				Flags = t.flags or t.Flags or t.pointer or t.Pointer or t.flag or t.Flag or false,
+				Sections = t.sections or t.Sections or false,
 			}
-			local _ = j.Sections and j.Sections or g
-			local b = p:Create("TextButton", {
+		
+			local parentSection = j.Sections and j.Sections or g
+		
+			local holder = p:Create("TextButton", {
 				FontFace = p.Settings.FontFace or Font.new("rbxasset://fonts/families/SourceSansPro.json"),
 				Text = "",
-				TextColor3 = Color3.fromRGB(0, 0, 0),
 				TextSize = 14,
 				AutomaticSize = Enum.AutomaticSize.Y,
 				BackgroundColor3 = Color3.fromRGB(120, 120, 120),
 				BackgroundTransparency = 0.87,
-				BorderColor3 = Color3.fromRGB(0, 0, 0),
-				LayoutOrder = 7,
 				Size = UDim2.new(1, 0, 0, 0),
-				Visible = true,
+				LayoutOrder = 7,
 				Name = "ToggleHolder",
-				Parent = _,
+				Parent = parentSection,
 			}, {
 				p:Create("UICorner", { CornerRadius = UDim.new(0, 4) }),
-				p:Create(
-					"UIStroke",
-					{ ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Color = Color3.fromRGB(35, 35, 35) }
-				),
+				p:Create("UIStroke", {
+					ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+					Color = Color3.fromRGB(35, 35, 35)
+				}),
 			})
-			local _ = p:Create("Frame", {
+		
+			local inner = p:Create("Frame", {
 				AutomaticSize = Enum.AutomaticSize.Y,
-				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 				BackgroundTransparency = 1,
-				BorderColor3 = Color3.fromRGB(0, 0, 0),
-				BorderSizePixel = 0,
 				Position = UDim2.new(0, 10, 0, 0),
 				Size = UDim2.new(1, -28, 0, 0),
-				Visible = true,
 				Name = "ToggleFrame",
-				Parent = b,
+				Parent = holder,
 			}, {
 				p:Create("UIListLayout", {
 					VerticalAlignment = Enum.VerticalAlignment.Center,
 					SortOrder = Enum.SortOrder.LayoutOrder,
 					Padding = UDim.new(0, 5),
 				}),
-				p:Create("UIPadding", { PaddingBottom = UDim.new(0, 13), PaddingTop = UDim.new(0, 13) }),
+				p:Create("UIPadding", {
+					PaddingBottom = UDim.new(0, 13),
+					PaddingTop = UDim.new(0, 13)
+				}),
 			})
-			local e = p:Create("TextLabel", {
+		
+			local titleLabel = p:Create("TextLabel", {
 				FontFace = p.Settings.FontFace or Font.new(
 					"rbxasset://fonts/families/GothamSSm.json",
 					Enum.FontWeight.Medium,
@@ -2447,16 +2448,16 @@ function p:Window(_)
 				TextColor3 = Color3.fromRGB(240, 240, 240),
 				TextSize = 13,
 				TextXAlignment = Enum.TextXAlignment.Left,
-				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 				BackgroundTransparency = 1,
-				BorderColor3 = Color3.fromRGB(0, 0, 0),
 				Size = UDim2.new(1, 0, 0, 14),
-				Visible = true,
 				Name = "ToggleTitle",
-				Parent = _,
+				Parent = inner,
 			})
-			if j.Description then 
-				local h = p:Create("TextLabel", {
+		
+			-- ▼▼▼ DESCRIPTION (สร้างเฉพาะเมื่อไม่ false และไม่ nil) ▼▼▼
+			local descLabel = nil
+			if j.Description and j.Description ~= false and j.Description ~= "" then
+				descLabel = p:Create("TextLabel", {
 					FontFace = p.Settings.FontFace or Font.new(
 						"rbxasset://fonts/families/GothamSSm.json",
 						Enum.FontWeight.Regular,
@@ -2468,200 +2469,125 @@ function p:Window(_)
 					TextWrapped = true,
 					TextXAlignment = Enum.TextXAlignment.Left,
 					AutomaticSize = Enum.AutomaticSize.Y,
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 					BackgroundTransparency = 1,
-					BorderColor3 = Color3.fromRGB(0, 0, 0),
 					Size = UDim2.new(1, -54, 0, 14),
-					Visible = j.Description or false,
 					Name = "ToggleDesc",
-					Parent = _,
+					Parent = inner,
 				})
-				h.Size = UDim2.new(1, -54, 0, h.TextBounds.Y)
 			end
-			local _ = o:LightenColor(p.Themes.BackgroundColor, 0.5)
-			local d = o:LightenColor(p.Themes.BackgroundColor, 0.25)
-			local f = p:Create("Frame", {
+			-- ▲▲▲ END DESCRIPTION ▲▲▲
+		
+			local bg1 = o:LightenColor(p.Themes.BackgroundColor, 0.5)
+			local bg2 = o:LightenColor(p.Themes.BackgroundColor, 0.25)
+		
+			local toggleFrame = p:Create("Frame", {
 				AnchorPoint = Vector2.new(1, 0.5),
-				BackgroundColor3 = _,
+				BackgroundColor3 = bg1,
 				BackgroundTransparency = j.Default and 0.5 or 1,
-				BorderColor3 = Color3.fromRGB(0, 0, 0),
-				BorderSizePixel = 0,
 				Position = UDim2.new(1, -10, 0.5, 0),
 				Size = UDim2.new(0, 36, 0, 18),
-				Visible = true,
 				Name = "Toggle",
-				Parent = b,
-			}, { p:Create("UICorner", { CornerRadius = UDim.new(0, 9) }) })
-			table.insert(p.Storage.Toggles, f)
-			local c = p:Create(
-				"UIStroke",
-				{ ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Color = Color3.fromRGB(125, 125, 125), Parent = f }
-			)
-			local g = p:Create("ImageLabel", {
+				Parent = holder,
+			}, {
+				p:Create("UICorner", { CornerRadius = UDim.new(0, 9) }),
+			})
+		
+			table.insert(p.Storage.Toggles, toggleFrame)
+		
+			local stroke = p:Create("UIStroke", {
+				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+				Color = Color3.fromRGB(125, 125, 125),
+				Parent = toggleFrame,
+			})
+		
+			local icon = p:Create("ImageLabel", {
 				Image = "http://www.roblox.com/asset/?id=12266946128",
-				ImageColor3 = j.Default and d or Color3.fromRGB(255, 255, 255),
+				ImageColor3 = j.Default and bg2 or Color3.fromRGB(255, 255, 255),
 				ImageTransparency = 0.5,
 				AnchorPoint = j.Default and Vector2.new(1, 0.5) or Vector2.new(0, 0.5),
-				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-				BackgroundTransparency = 1,
-				BorderColor3 = Color3.fromRGB(0, 0, 0),
-				BorderSizePixel = 0,
 				Position = j.Default and UDim2.new(1, -2, 0.5, 0) or UDim2.new(0, 2, 0.5, 0),
+				BackgroundTransparency = 1,
 				Size = UDim2.new(0, 14, 0, 14),
-				Visible = true,
 				Name = "ToggleImage",
-				Parent = f,
+				Parent = toggleFrame,
 			})
-			table.insert(p.Storage.ToggleImages, g)
-			local a = e.TextBounds.Y
-			local _ = h and h.TextBounds.Y or 0
-			e.Size = UDim2.new(1, -54, 0, a)
-			if h then
-				h.Size = UDim2.new(1, -54, 0, _)
-			end
+		
+			table.insert(p.Storage.ToggleImages, icon)
+		
 			function i:Update()
-				local _ = e.TextBounds.Y
-				local a = h and h.TextBounds.Y or 0
-				e.Size = UDim2.new(1, -54, 0, _)
-				if h then
-					h.Size = UDim2.new(1, -54, 0, a)
+				titleLabel.Size = UDim2.new(1, -54, 0, titleLabel.TextBounds.Y)
+				if descLabel then
+					descLabel.Size = UDim2.new(1, -54, 0, descLabel.TextBounds.Y)
 				end
 			end
-			function i:Set(_)
-				j.Default = _
+		
+			function i:Set(val)
+				j.Default = val
+		
 				if j.Flags then
 					p.Flags[tostring(j.Flags)] = j.Default
 				end
-				d = o:LightenColor(p.Themes.BackgroundColor, 0.25)
+		
+				local accent = o:LightenColor(p.Themes.BackgroundColor, 0.25)
+		
 				o:Thread(function()
-					o:Animation(
-						f,
-						{ BackgroundTransparency = j.Default and 0.5 or 1 },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-					o:Animation(
-						g,
-						{ AnchorPoint = j.Default and Vector2.new(1, 0.5) or Vector2.new(0, 0.5) },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-					o:Animation(
-						g,
-						{ Position = j.Default and UDim2.new(1, -2, 0.5, 0) or UDim2.new(0, 2, 0.5, 0) },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-					o:Animation(
-						g,
-						{ ImageTransparency = j.Default and 0 or 0.5 },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-					o:Animation(
-						g,
-						{ ImageColor3 = j.Default and d or Color3.fromRGB(125, 125, 125) },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-					o:Animation(
-						c,
-						{ Color = j.Default and p.Themes.AccentColor or Color3.fromRGB(125, 125, 125) },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-					o:Animation(
-						c,
-						{ Thickness = j.Default and 0 or 1 },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
+					o:Animation(toggleFrame, {
+						BackgroundTransparency = j.Default and 0.5 or 1
+					}, p.AnimationSpeed, p.EasingStyle.Quad, p.EasingDirection.Out)
+		
+					o:Animation(icon, {
+						AnchorPoint = j.Default and Vector2.new(1, 0.5) or Vector2.new(0, 0.5)
+					}, p.AnimationSpeed, p.EasingStyle.Quad, p.EasingDirection.Out)
+		
+					o:Animation(icon, {
+						Position = j.Default and UDim2.new(1, -2, 0.5, 0)
+							or UDim2.new(0, 2, 0.5, 0)
+					}, p.AnimationSpeed, p.EasingStyle.Quad, p.EasingDirection.Out)
+		
+					o:Animation(icon, {
+						ImageTransparency = j.Default and 0 or 0.5
+					}, p.AnimationSpeed)
+		
+					o:Animation(icon, {
+						ImageColor3 = j.Default and accent or Color3.fromRGB(125, 125, 125)
+					}, p.AnimationSpeed)
+		
+					o:Animation(stroke, {
+						Color = j.Default and p.Themes.AccentColor or Color3.fromRGB(125, 125, 125)
+					}, p.AnimationSpeed)
+		
+					o:Animation(stroke, {
+						Thickness = j.Default and 0 or 1
+					}, p.AnimationSpeed)
 				end)
+		
 				if i.Callback then
 					i.Callback(j.Default)
 				end
+		
 				return i
 			end
+		
 			if j.Flags then
 				p.Flags[tostring(j.Flags)] = j.Default
 			end
-			b.Activated:Connect(function()
-				j.Default = not j.Default
-				if j.Flags then
-					p.Flags[tostring(j.Flags)] = j.Default
-				end
-				o:Thread(function()
-					o:Animation(
-						f,
-						{ BackgroundTransparency = j.Default and 0.5 or 1 },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-					o:Animation(
-						g,
-						{ AnchorPoint = j.Default and Vector2.new(1, 0.5) or Vector2.new(0, 0.5) },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-					o:Animation(
-						g,
-						{ Position = j.Default and UDim2.new(1, -2, 0.5, 0) or UDim2.new(0, 2, 0.5, 0) },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-					o:Animation(
-						g,
-						{ ImageTransparency = j.Default and 0 or 0.5 },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-					o:Animation(
-						g,
-						{ ImageColor3 = j.Default and d or Color3.fromRGB(125, 125, 125) },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-					o:Animation(
-						c,
-						{ Color = j.Default and p.Themes.AccentColor or Color3.fromRGB(125, 125, 125) },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-					o:Animation(
-						c,
-						{ Thickness = j.Default and 0 or 1 },
-						p.AnimationSpeed,
-						p.EasingStyle.Quad,
-						p.EasingDirection.Out
-					)
-				end)
-				if i.Callback then
-					i.Callback(j.Default)
-				end
+		
+			holder.Activated:Connect(function()
+				i:Set(not j.Default)
 			end)
-			function i:OnChanged(_)
-				i.Callback = _
+		
+			function i:OnChanged(cb)
+				i.Callback = cb
 				if i.Callback then
 					i.Callback(j.Default)
 				end
 				return i
 			end
+		
 			if j.Default then
 				i:Set(j.Default)
 			end
+		
 			return i
 		end
 		function h:AddDropdown(_)
