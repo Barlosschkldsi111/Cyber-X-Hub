@@ -2252,17 +2252,23 @@ function p:Window(_)
 			end
 			return d, c, e
 		end
-		function h:AddButton(_)
+		function h:AddButton(t)
 			local c = {}
-			local _ = _ or {}
-			local e = {
-				Title = _.title or _.Title or "Button",
-				Description = _.description or _.Description or _.desc or _.Desc or false,
-				Callback = _.callback or _.Callback or function() end,
-				Sections = _.sections or _.Sections or false,
+			local t = t or {}
+		
+			-- รวมทุกชื่อที่เป็นไปได้
+			local info = {
+				Title = t.title or t.Title or "Button",
+				Description = t.description or t.Description or t.desc or t.Desc or false,
+				Callback = t.callback or t.Callback or function() end,
+				Sections = t.sections or t.Sections or false,
 			}
-			local _ = e.Sections and e.Sections or g
-			local b = p:Create("TextButton", {
+		
+			-- section ที่จะใส่ปุ่มลงไป
+			local parentSection = info.Sections and info.Sections or g
+		
+			-- Holder หลัก
+			local holder = p:Create("TextButton", {
 				FontFace = p.Settings.FontFace or Font.new("rbxasset://fonts/families/SourceSansPro.json"),
 				Text = "",
 				TextColor3 = Color3.fromRGB(0, 0, 0),
@@ -2275,15 +2281,17 @@ function p:Window(_)
 				Size = UDim2.new(1, 0, 0, 0),
 				Visible = true,
 				Name = "ButtonHolder",
-				Parent = _,
+				Parent = parentSection,
 			}, {
 				p:Create("UICorner", { CornerRadius = UDim.new(0, 4) }),
-				p:Create(
-					"UIStroke",
-					{ ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Color = Color3.fromRGB(35, 35, 35) }
-				),
+				p:Create("UIStroke", {
+					ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+					Color = Color3.fromRGB(35, 35, 35)
+				}),
 			})
-			local _ = p:Create("Frame", {
+		
+			-- Frame ของตัวอักษร
+			local frame = p:Create("Frame", {
 				AutomaticSize = Enum.AutomaticSize.Y,
 				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 				BackgroundTransparency = 1,
@@ -2293,22 +2301,27 @@ function p:Window(_)
 				Size = UDim2.new(1, -28, 0, 0),
 				Visible = true,
 				Name = "ButtonFrame",
-				Parent = b,
+				Parent = holder,
 			}, {
 				p:Create("UIListLayout", {
 					VerticalAlignment = Enum.VerticalAlignment.Center,
 					SortOrder = Enum.SortOrder.LayoutOrder,
 					Padding = UDim.new(0, 5),
 				}),
-				p:Create("UIPadding", { PaddingBottom = UDim.new(0, 13), PaddingTop = UDim.new(0, 13) }),
+				p:Create("UIPadding", {
+					PaddingBottom = UDim.new(0, 13),
+					PaddingTop = UDim.new(0, 13)
+				}),
 			})
-			local d = p:Create("TextLabel", {
+		
+			-- Title
+			local lblTitle = p:Create("TextLabel", {
 				FontFace = p.Settings.FontFace or Font.new(
 					"rbxasset://fonts/families/GothamSSm.json",
 					Enum.FontWeight.Medium,
 					Enum.FontStyle.Normal
 				),
-				Text = e.Title,
+				Text = info.Title,
 				TextColor3 = Color3.fromRGB(240, 240, 240),
 				TextSize = 13,
 				TextXAlignment = Enum.TextXAlignment.Left,
@@ -2318,29 +2331,36 @@ function p:Window(_)
 				Size = UDim2.new(1, 0, 0, 14),
 				Visible = true,
 				Name = "ButtonTitle",
-				Parent = _,
+				Parent = frame,
 			})
-			local f = p:Create("TextLabel", {
-				FontFace = p.Settings.FontFace or Font.new(
-					"rbxasset://fonts/families/GothamSSm.json",
-					Enum.FontWeight.Regular,
-					Enum.FontStyle.Normal
-				),
-				Text = e.Description,
-				TextColor3 = Color3.fromRGB(170, 170, 170),
-				TextSize = 12,
-				TextWrapped = true,
-				TextXAlignment = Enum.TextXAlignment.Left,
-				AutomaticSize = Enum.AutomaticSize.Y,
-				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-				BackgroundTransparency = 1,
-				BorderColor3 = Color3.fromRGB(0, 0, 0),
-				Size = UDim2.new(1, 0, 0, 14),
-				Visible = e.Description or false,
-				Name = "ButtonDesc",
-				Parent = _,
-			})
-			local _ = p:Create("ImageLabel", {
+		
+			-- Description (ไม่สร้างถ้าเป็น false / nil)
+			local lblDesc = nil
+			if info.Description then
+				lblDesc = p:Create("TextLabel", {
+					FontFace = p.Settings.FontFace or Font.new(
+						"rbxasset://fonts/families/GothamSSm.json",
+						Enum.FontWeight.Regular,
+						Enum.FontStyle.Normal
+					),
+					Text = info.Description,
+					TextColor3 = Color3.fromRGB(170, 170, 170),
+					TextSize = 12,
+					TextWrapped = true,
+					TextXAlignment = Enum.TextXAlignment.Left,
+					AutomaticSize = Enum.AutomaticSize.Y,
+					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+					BackgroundTransparency = 1,
+					BorderColor3 = Color3.fromRGB(0, 0, 0),
+					Size = UDim2.new(1, 0, 0, 14),
+					Visible = true,
+					Name = "ButtonDesc",
+					Parent = frame,
+				})
+				lblDesc.Size = UDim2.new(1, 0, 0, lblDesc.TextBounds.Y)
+			end
+		
+			local icon = p:Create("ImageLabel", {
 				Image = "rbxassetid://10709791437",
 				ImageColor3 = Color3.fromRGB(240, 240, 240),
 				AnchorPoint = Vector2.new(1, 0.5),
@@ -2352,38 +2372,53 @@ function p:Window(_)
 				Size = UDim2.new(0, 16, 0, 16),
 				Visible = true,
 				Name = "ButtonImage",
-				Parent = b,
+				Parent = holder,
 			})
-			local _ = d.TextBounds.Y
-			local a = f.TextBounds.Y
-			d.Size = UDim2.new(1, 0, 0, _)
-			f.Size = UDim2.new(1, 0, 0, a)
-			function c:Update()
-				local _ = d.TextBounds.Y
-				local a = f.TextBounds.Y
-				d.Size = UDim2.new(1, 0, 0, _)
-				f.Size = UDim2.new(1, 0, 0, a)
+		
+			local tH = lblTitle.TextBounds.Y
+			local dH = lblDesc and lblDesc.TextBounds.Y or 0
+		
+			lblTitle.Size = UDim2.new(1, 0, 0, tH)
+			if lblDesc then
+				lblDesc.Size = UDim2.new(1, 0, 0, dH)
 			end
-			function c:Set(_)
-				local _ = _ or {}
-				local _ = {
-					Title = _.title or _.Title or "Button",
-					Description = _.description or _.Description or _.desc or _.Desc or false,
-					Callback = _.callback or _.Callback or function() end,
-				}
-				if _.Description then
-					f.Visible = true
-				else
-					f.Visible = false
+		
+			function c:Update()
+				local tH = lblTitle.TextBounds.Y
+				local dH = lblDesc and lblDesc.TextBounds.Y or 0
+		
+				lblTitle.Size = UDim2.new(1, 0, 0, tH)
+				if lblDesc then
+					lblDesc.Size = UDim2.new(1, 0, 0, dH)
 				end
-				d.Text = _.Title
-				f.Text = _.Description
-				c.Callback = _.Callback
+			end
+		
+			function c:Set(v)
+				v = v or {}
+				local newInfo = {
+					Title = v.title or v.Title or info.Title,
+					Description = v.description or v.Description or v.desc or v.Desc or false,
+					Callback = v.callback or v.Callback or info.Callback,
+				}
+		
+				lblTitle.Text = newInfo.Title
+				if lblDesc then
+					lblDesc.Visible = newInfo.Description ~= false
+				end
+		
+				if lblDesc and newInfo.Description then
+					lblDesc.Text = newInfo.Description
+				end
+		
+				info.Callback = newInfo.Callback
+		
 				c:Update()
 			end
-			p:Connect(b.Activated, function()
-				e.Callback()
+		
+			holder.Activated:Connect(function()
+				info.Callback()
 			end)
+		
 			return c
 		end
 		function h:AddToggle(t)
@@ -2454,7 +2489,6 @@ function p:Window(_)
 				Parent = inner,
 			})
 		
-			-- ▼▼▼ DESCRIPTION (สร้างเฉพาะเมื่อไม่ false และไม่ nil) ▼▼▼
 			local descLabel = nil
 			if j.Description and j.Description ~= false and j.Description ~= "" then
 				descLabel = p:Create("TextLabel", {
