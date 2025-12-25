@@ -2317,17 +2317,16 @@ function library:CreateWindow(options, ...)
 	tabSlider.Visible = false
 	local IgnoreCoreInputs
 	do
-		local os_clock = os.clock
-		library.signals[1 + #library.signals] = userInputService.InputBegan:Connect(function(keyCode)
-			if IgnoreCoreInputs or userInputService:GetFocusedTextBox() then
-				return
-			elseif (keyCode.KeyCode == library.configuration.hideKeybind) or (shared.force_toggle_gui_keybind and (shared.force_toggle_gui_keybind == keyCode.KeyCode)) then
-				if lasthidebing and ((os_clock() - lasthidebing) <= 12) then
-					main.Visible = not main.Visible
-				end
-				lasthidebing = nil
-			end
-		end)
+		library.signals[#library.signals + 1] =
+            userInputService.InputBegan:Connect(function(input, gp)
+            if gp then return end
+            if IgnoreCoreInputs or userInputService:GetFocusedTextBox() then return end
+            if input.KeyCode == library.configuration.hideKeybind
+                or (shared.force_toggle_gui_keybind
+                and shared.force_toggle_gui_keybind == input.KeyCode) then
+                main.Visible = not main.Visible
+            end
+        end)
 	end
 	local windowFunctions = {
 		tabCount = 0,
