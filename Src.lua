@@ -197,15 +197,15 @@ local Library = {
 
     IsLightTheme = false,
     Scheme = {
-        BackgroundColor = Color3.fromRGB(18, 10, 18),  
-        MainColor = Color3.fromRGB(28, 15, 30),         
-        AccentColor = Color3.fromRGB(220, 60, 145),   
-        OutlineColor = Color3.fromRGB(45, 25, 45),     
-        FontColor = Color3.fromRGB(255, 255, 255),    
-        Font = Font.fromEnum(Enum.Font.Code),
-        RedColor = Color3.fromRGB(255, 80, 120),     
-        DarkColor = Color3.fromRGB(10, 5, 10),          
-        WhiteColor = Color3.fromRGB(255, 255, 255),  
+        BackgroundColor = Color3.fromRGB(15, 10, 18), 
+        MainColor       = Color3.fromRGB(25, 18, 30), 
+        AccentColor     = Color3.fromRGB(190, 50, 130),
+        OutlineColor    = Color3.fromRGB(55, 35, 60),  
+        FontColor       = Color3.fromRGB(235, 220, 240),
+        Font            = Font.fromEnum(Enum.Font.Code),
+        RedColor        = Color3.fromRGB(220, 70, 120),
+        DarkColor       = Color3.fromRGB(12, 8, 15),
+        WhiteColor      = Color3.fromRGB(255, 255, 255)
     },
 
     Registry = {},
