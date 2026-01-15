@@ -4442,9 +4442,7 @@ do
         end
 
         function Dropdown:UpdateColors()
-            if Library.Unloaded then
-                return
-            end
+            if Library.Unloaded then return end
 
             Label.TextTransparency = Dropdown.Disabled and 0.8 or 0
             Display.TextTransparency = Dropdown.Disabled and 0.8 or 0
@@ -4452,27 +4450,17 @@ do
         end
 
         function Dropdown:Display()
-            if Library.Unloaded then
-                return
-            end
+            if Library.Unloaded then return end
 
             local Str = ""
 
             if Info.Multi then
-                for _, Value in Dropdown.Values do
-                    if Dropdown.Value[Value] then
-                        Str = Str
-                            .. (Info.FormatDisplayValue and tostring(Info.FormatDisplayValue(Value)) or tostring(Value))
-                            .. ", "
-                    end
+                for _, val in ipairs(Dropdown.Value) do
+                    Str ..= tostring(val) .. ", "
                 end
-
                 Str = Str:sub(1, #Str - 2)
             else
                 Str = Dropdown.Value and tostring(Dropdown.Value) or ""
-                if Str ~= "" and Info.FormatDisplayValue then
-                    Str = tostring(Info.FormatDisplayValue(Str))
-                end
             end
 
             if #Str > 25 then
@@ -4482,30 +4470,20 @@ do
             Display.Text = (Str == "" and "---" or Str)
         end
 
-        function Dropdown:OnChanged(Func)
-            Dropdown.Changed = Func
-        end
-
         function Dropdown:GetActiveValues()
             if Info.Multi then
-                local Table = {}
-
-                for Value, _ in Dropdown.Value do
-                    table.insert(Table, Value)
-                end
-
-                return Table
+                return Dropdown.Value
             end
-
-            return Dropdown.Value and 1 or 0
+            return Dropdown.Value
         end
 
         local Buttons = {}
+
         function Dropdown:BuildDropdownList()
             local Values = Dropdown.Values
             local DisabledValues = Dropdown.DisabledValues
 
-            for Button, _ in Buttons do
+            for Button,_ in Buttons do
                 Button:Destroy()
             end
             table.clear(Buttons)
@@ -4518,7 +4496,7 @@ do
 
                 Count += 1
                 local IsDisabled = table.find(DisabledValues, Value)
-                local Table = {}
+                local TableObj = {}
 
                 local Button = New("TextButton", {
                     BackgroundColor3 = "MainColor",
@@ -4537,19 +4515,14 @@ do
                     Parent = Button,
                 })
 
-                local Selected
-                if Info.Multi then
-                    Selected = Dropdown.Value[Value]
-                else
-                    Selected = Dropdown.Value == Value
-                end
+                local Selected = Info.Multi
+                    and table.find(Dropdown.Value, Value)
+                    or Dropdown.Value == Value
 
-                function Table:UpdateButton()
-                    if Info.Multi then
-                        Selected = Dropdown.Value[Value]
-                    else
-                        Selected = Dropdown.Value == Value
-                    end
+                function TableObj:UpdateButton()
+                    Selected = Info.Multi
+                        and table.find(Dropdown.Value, Value)
+                        or Dropdown.Value == Value
 
                     Button.BackgroundTransparency = Selected and 0 or 1
                     Button.TextTransparency = IsDisabled and 0.8 or Selected and 0 or 0.5
@@ -4559,20 +4532,26 @@ do
                     Button.MouseButton1Click:Connect(function()
                         local Try = not Selected
 
-                        if not (Dropdown:GetActiveValues() == 1 and not Try and not Info.AllowNull) then
-                            Selected = Try
-                            if Info.Multi then
-                                Dropdown.Value[Value] = Selected and true or nil
+                        if Info.Multi then
+                            if Try then
+                                table.insert(Dropdown.Value, Value)
                             else
-                                Dropdown.Value = Selected and Value or nil
+                                for i, v in ipairs(Dropdown.Value) do
+                                    if v == Value then
+                                        table.remove(Dropdown.Value, i)
+                                        break
+                                    end
+                                end
                             end
-
-                            for _, OtherButton in Buttons do
-                                OtherButton:UpdateButton()
-                            end
+                        else
+                            Dropdown.Value = Try and Value or nil
                         end
 
-                        Table:UpdateButton()
+                        for _, OtherBtn in Buttons do
+                            OtherBtn:UpdateButton()
+                        end
+
+                        TableObj:UpdateButton()
                         Dropdown:Display()
 
                         Library:UpdateDependencyBoxes()
@@ -4581,10 +4560,10 @@ do
                     end)
                 end
 
-                Table:UpdateButton()
+                TableObj:UpdateButton()
                 Dropdown:Display()
 
-                Buttons[Button] = Table
+                Buttons[Button] = TableObj
             end
 
             Dropdown:RecalculateListSize(Count)
@@ -4592,26 +4571,25 @@ do
 
         function Dropdown:SetValue(Value)
             if Info.Multi then
-                local Table = {}
+                local NewTable = {}
 
-                for Val, Active in Value or {} do
-                    if typeof(Active) ~= "boolean" then
-                        Table[Active] = true
-                    elseif Active and table.find(Dropdown.Values, Val) then
-                        Table[Val] = true
+                for _, name in ipairs(Value or {}) do
+                    if table.find(Dropdown.Values, name) then
+                        table.insert(NewTable, name)
                     end
                 end
 
-                Dropdown.Value = Table
+                Dropdown.Value = NewTable
             else
                 if table.find(Dropdown.Values, Value) then
                     Dropdown.Value = Value
-                elseif not Value then
+                else
                     Dropdown.Value = nil
                 end
             end
 
             Dropdown:Display()
+
             for _, Button in Buttons do
                 Button:UpdateButton()
             end
@@ -4635,10 +4613,7 @@ do
                 end
             elseif typeof(Values) == "string" then
                 table.insert(Dropdown.Values, Values)
-            else
-                return
             end
-
             Dropdown:BuildDropdownList()
         end
 
@@ -4647,94 +4622,62 @@ do
             Dropdown:BuildDropdownList()
         end
 
-        function Dropdown:AddDisabledValues(DisabledValues)
-            if typeof(DisabledValues) == "table" then
-                for _, val in DisabledValues do
-                    table.insert(Dropdown.DisabledValues, val)
-                end
-            elseif typeof(DisabledValues) == "string" then
-                table.insert(Dropdown.DisabledValues, DisabledValues)
-            else
-                return
-            end
-
-            Dropdown:BuildDropdownList()
-        end
-
-        function Dropdown:SetDisabled(Disabled: boolean)
+        function Dropdown:SetDisabled(Disabled)
             Dropdown.Disabled = Disabled
 
             if Dropdown.TooltipTable then
-                Dropdown.TooltipTable.Disabled = Dropdown.Disabled
+                Dropdown.TooltipTable.Disabled = Disabled
             end
 
             MenuTable:Close()
-            Display.Active = not Dropdown.Disabled
+            Display.Active = not Disabled
             Dropdown:UpdateColors()
         end
 
-        function Dropdown:SetVisible(Visible: boolean)
+        function Dropdown:SetVisible(Visible)
             Dropdown.Visible = Visible
 
-            Holder.Visible = Dropdown.Visible
+            Holder.Visible = Visible
             Groupbox:Resize()
         end
 
-        function Dropdown:SetText(Text: string)
+        function Dropdown:SetText(Text)
             Dropdown.Text = Text
             Holder.Size = UDim2.new(1, 0, 0, Text and 39 or 21)
 
-            Label.Text = Text and Text or ""
+            Label.Text = Text or ""
             Label.Visible = not not Text
         end
 
         Display.MouseButton1Click:Connect(function()
-            if Dropdown.Disabled then
-                return
+            if not Dropdown.Disabled then
+                MenuTable:Toggle()
             end
-
-            MenuTable:Toggle()
         end)
 
         if SearchBox then
             SearchBox:GetPropertyChangedSignal("Text"):Connect(Dropdown.BuildDropdownList)
         end
-
         local Defaults = {}
         if typeof(Info.Default) == "string" then
             local Index = table.find(Dropdown.Values, Info.Default)
             if Index then
-                table.insert(Defaults, Index)
+                table.insert(Defaults, Dropdown.Values[Index])
             end
         elseif typeof(Info.Default) == "table" then
             for _, Value in next, Info.Default do
-                local Index = table.find(Dropdown.Values, Value)
-                if Index then
-                    table.insert(Defaults, Index)
+                if table.find(Dropdown.Values, Value) then
+                    table.insert(Defaults, Value)
                 end
             end
-        elseif Dropdown.Values[Info.Default] ~= nil then
-            table.insert(Defaults, Info.Default)
         end
 
         if next(Defaults) then
-            for i = 1, #Defaults do
-                local Index = Defaults[i]
-                if Info.Multi then
-                    Dropdown.Value[Dropdown.Values[Index]] = true
-                else
-                    Dropdown.Value = Dropdown.Values[Index]
-                end
-
-                if not Info.Multi then
-                    break
-                end
+            if Info.Multi then
+                Dropdown.Value = Defaults
+            else
+                Dropdown.Value = Defaults[1]
             end
-        end
-
-        if typeof(Dropdown.Tooltip) == "string" or typeof(Dropdown.DisabledTooltip) == "string" then
-            Dropdown.TooltipTable = Library:AddTooltip(Dropdown.Tooltip, Dropdown.DisabledTooltip, Display)
-            Dropdown.TooltipTable.Disabled = Dropdown.Disabled
         end
 
         Dropdown:UpdateColors()
