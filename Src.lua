@@ -4308,7 +4308,7 @@ do
         return Slider
     end
 
-    function Funcs:AddDropdown(Idx, Info)
+    function Funcs:AddDropdown(Idx, Info) 
         Info = Library:Validate(Info, Templates.Dropdown)
 
         local Groupbox = self
@@ -4321,6 +4321,19 @@ do
             Info.Values = GetTeams()
             Info.AllowNull = true
         end
+
+        local function ForceStringList(t)
+            local new = {}
+            if typeof(t) == "table" then
+                for _, v in ipairs(t) do
+                    new[#new+1] = tostring(v)
+                end
+            end
+            return new
+        end
+
+        Info.Values = ForceStringList(Info.Values or {})
+        Info.DisabledValues = ForceStringList(Info.DisabledValues or {})
 
         local Dropdown = {
             Text = typeof(Info.Text) == "string" and Info.Text or nil,
@@ -4421,7 +4434,7 @@ do
                 return { 0.5, Display.AbsoluteSize.Y + 1.5 }
             end,
             2,
-            function(Active: boolean)
+            function(Active)
                 Display.TextTransparency = (Active and SearchBox) and 1 or 0
                 ArrowImage.ImageTransparency = Active and 0 or 0.5
                 ArrowImage.Rotation = Active and 180 or 0
@@ -4431,11 +4444,11 @@ do
                 end
             end
         )
+
         Dropdown.Menu = MenuTable
 
         function Dropdown:RecalculateListSize(Count)
-            local Y = math.clamp((Count or GetTableSize(Dropdown.Values)) * 21, 0, Info.MaxVisibleDropdownItems * 21)
-
+            local Y = math.clamp((Count or #Dropdown.Values) * 21, 0, Info.MaxVisibleDropdownItems * 21)
             MenuTable:SetSize(function()
                 return UDim2.fromOffset(Display.AbsoluteSize.X / Library.DPIScale, Y)
             end)
@@ -4443,7 +4456,6 @@ do
 
         function Dropdown:UpdateColors()
             if Library.Unloaded then return end
-
             Label.TextTransparency = Dropdown.Disabled and 0.8 or 0
             Display.TextTransparency = Dropdown.Disabled and 0.8 or 0
             ArrowImage.ImageTransparency = Dropdown.Disabled and 0.8 or MenuTable.Active and 0 or 0.5
@@ -4470,32 +4482,26 @@ do
             Display.Text = (Str == "" and "---" or Str)
         end
 
-        function Dropdown:GetActiveValues()
-            if Info.Multi then
-                return Dropdown.Value
-            end
-            return Dropdown.Value
-        end
-
         local Buttons = {}
 
         function Dropdown:BuildDropdownList()
-            local Values = Dropdown.Values
-            local DisabledValues = Dropdown.DisabledValues
-
             for Button,_ in Buttons do
                 Button:Destroy()
             end
             table.clear(Buttons)
 
             local Count = 0
-            for _, Value in Values do
-                if SearchBox and not tostring(Value):lower():match(SearchBox.Text:lower()) then
+
+            for _, Value in ipairs(Dropdown.Values) do
+                local StrValue = tostring(Value)
+
+                if SearchBox and not StrValue:lower():match(SearchBox.Text:lower()) then
                     continue
                 end
 
                 Count += 1
-                local IsDisabled = table.find(DisabledValues, Value)
+                local IsDisabled = table.find(Dropdown.DisabledValues, StrValue)
+
                 local TableObj = {}
 
                 local Button = New("TextButton", {
@@ -4503,26 +4509,23 @@ do
                     BackgroundTransparency = 1,
                     LayoutOrder = IsDisabled and 1 or 0,
                     Size = UDim2.new(1, 0, 0, 21),
-                    Text = tostring(Value),
+                    Text = StrValue,
                     TextSize = 14,
                     TextTransparency = 0.5,
                     TextXAlignment = Enum.TextXAlignment.Left,
                     Parent = MenuTable.Menu,
                 })
+
                 New("UIPadding", {
                     PaddingLeft = UDim.new(0, 7),
                     PaddingRight = UDim.new(0, 7),
                     Parent = Button,
                 })
 
-                local Selected = Info.Multi
-                    and table.find(Dropdown.Value, Value)
-                    or Dropdown.Value == Value
-
                 function TableObj:UpdateButton()
-                    Selected = Info.Multi
-                        and table.find(Dropdown.Value, Value)
-                        or Dropdown.Value == Value
+                    local Selected = Info.Multi
+                        and table.find(Dropdown.Value, StrValue)
+                        or Dropdown.Value == StrValue
 
                     Button.BackgroundTransparency = Selected and 0 or 1
                     Button.TextTransparency = IsDisabled and 0.8 or Selected and 0 or 0.5
@@ -4530,21 +4533,23 @@ do
 
                 if not IsDisabled then
                     Button.MouseButton1Click:Connect(function()
-                        local Try = not Selected
+                        local Selected = Info.Multi
+                            and table.find(Dropdown.Value, StrValue)
+                            or Dropdown.Value == StrValue
 
                         if Info.Multi then
-                            if Try then
-                                table.insert(Dropdown.Value, Value)
-                            else
+                            if Selected then
                                 for i, v in ipairs(Dropdown.Value) do
-                                    if v == Value then
+                                    if tostring(v) == StrValue then
                                         table.remove(Dropdown.Value, i)
                                         break
                                     end
                                 end
+                            else
+                                table.insert(Dropdown.Value, StrValue)
                             end
                         else
-                            Dropdown.Value = Try and Value or nil
+                            Dropdown.Value = Selected and nil or StrValue
                         end
 
                         for _, OtherBtn in Buttons do
@@ -4562,7 +4567,6 @@ do
 
                 TableObj:UpdateButton()
                 Dropdown:Display()
-
                 Buttons[Button] = TableObj
             end
 
@@ -4572,17 +4576,17 @@ do
         function Dropdown:SetValue(Value)
             if Info.Multi then
                 local NewTable = {}
-
                 for _, name in ipairs(Value or {}) do
-                    if table.find(Dropdown.Values, name) then
-                        table.insert(NewTable, name)
+                    local s = tostring(name)
+                    if table.find(Dropdown.Values, s) then
+                        NewTable[#NewTable+1] = s
                     end
                 end
-
                 Dropdown.Value = NewTable
             else
-                if table.find(Dropdown.Values, Value) then
-                    Dropdown.Value = Value
+                local s = tostring(Value)
+                if table.find(Dropdown.Values, s) then
+                    Dropdown.Value = s
                 else
                     Dropdown.Value = nil
                 end
@@ -4602,23 +4606,23 @@ do
         end
 
         function Dropdown:SetValues(Values)
-            Dropdown.Values = Values
+            Dropdown.Values = ForceStringList(Values)
             Dropdown:BuildDropdownList()
         end
 
         function Dropdown:AddValues(Values)
             if typeof(Values) == "table" then
                 for _, val in Values do
-                    table.insert(Dropdown.Values, val)
+                    Dropdown.Values[#Dropdown.Values+1] = tostring(val)
                 end
-            elseif typeof(Values) == "string" then
-                table.insert(Dropdown.Values, Values)
+            else
+                Dropdown.Values[#Dropdown.Values+1] = tostring(Values)
             end
             Dropdown:BuildDropdownList()
         end
 
         function Dropdown:SetDisabledValues(DisabledValues)
-            Dropdown.DisabledValues = DisabledValues
+            Dropdown.DisabledValues = ForceStringList(DisabledValues)
             Dropdown:BuildDropdownList()
         end
 
@@ -4636,7 +4640,6 @@ do
 
         function Dropdown:SetVisible(Visible)
             Dropdown.Visible = Visible
-
             Holder.Visible = Visible
             Groupbox:Resize()
         end
@@ -4644,7 +4647,6 @@ do
         function Dropdown:SetText(Text)
             Dropdown.Text = Text
             Holder.Size = UDim2.new(1, 0, 0, Text and 39 or 21)
-
             Label.Text = Text or ""
             Label.Visible = not not Text
         end
@@ -4658,16 +4660,19 @@ do
         if SearchBox then
             SearchBox:GetPropertyChangedSignal("Text"):Connect(Dropdown.BuildDropdownList)
         end
+
         local Defaults = {}
+
         if typeof(Info.Default) == "string" then
-            local Index = table.find(Dropdown.Values, Info.Default)
-            if Index then
-                table.insert(Defaults, Dropdown.Values[Index])
+            local s = tostring(Info.Default)
+            if table.find(Dropdown.Values, s) then
+                Defaults[#Defaults+1] = s
             end
         elseif typeof(Info.Default) == "table" then
             for _, Value in next, Info.Default do
-                if table.find(Dropdown.Values, Value) then
-                    table.insert(Defaults, Value)
+                local s = tostring(Value)
+                if table.find(Dropdown.Values, s) then
+                    Defaults[#Defaults+1] = s
                 end
             end
         end
