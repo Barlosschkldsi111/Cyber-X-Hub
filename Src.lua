@@ -3321,7 +3321,7 @@ do
 
         Button.Base, Button.Stroke = CreateButton(Button)
         InitEvents(Button)
-
+        
         function Button:AddButton(...)
             local Info = GetInfo(...)
 
@@ -7216,6 +7216,13 @@ function Library:CreateWindow(WindowInfo)
         return Tab
     end
 
+    local UIS = game:GetService("UserInputService")
+    local RunService = game:GetService("RunService")
+    local OldMouseIconEnabled
+    local MouseConnection
+    local HeartbeatConnection
+    local TargetPos = Vector2.zero
+
     function Library:Toggle(Value: boolean?)
         if typeof(Value) == "boolean" then
             Library.Toggled = Value
@@ -7226,9 +7233,39 @@ function Library:CreateWindow(WindowInfo)
         if WindowInfo.UnlockMouseWhileOpen then
             ModalElement.Modal = Library.Toggled
         end
-        if not Library.Toggled then
-            TooltipLabel.Visible = false
+        if Library.Toggled and not Library.IsMobile then
+            OldMouseIconEnabled = UIS.MouseIconEnabled
+            UIS.MouseIconEnabled = false
+            Cursor.Visible = Library.ShowCustomCursor
+            if MouseConnection then MouseConnection:Disconnect() end
+            if HeartbeatConnection then HeartbeatConnection:Disconnect() end
 
+            MouseConnection = UIS.InputChanged:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseMovement then
+                    TargetPos = UIS:GetMouseLocation()
+                end
+            end)
+            HeartbeatConnection = RunService.Heartbeat:Connect(function()
+                if not (Library.Toggled and ScreenGui and ScreenGui.Parent) then
+                    UIS.MouseIconEnabled = OldMouseIconEnabled
+                    Cursor.Visible = false
+                    if MouseConnection then MouseConnection:Disconnect() end
+                    if HeartbeatConnection then HeartbeatConnection:Disconnect() end
+                    return
+                end
+                if Library.ShowCustomCursor then
+                    local cur = Cursor.Position
+                    local goal = UDim2.fromOffset(TargetPos.X, TargetPos.Y)
+                    Cursor.Position = cur:Lerp(goal, 0.4)
+                end
+            end)
+        elseif not Library.Toggled then
+            if MouseConnection then MouseConnection:Disconnect() end
+            if HeartbeatConnection then HeartbeatConnection:Disconnect() end
+            UIS.MouseIconEnabled = OldMouseIconEnabled
+            Cursor.Visible = false
+
+            TooltipLabel.Visible = false
             for _, Option in Library.Options do
                 if Option.Type == "ColorPicker" then
                     Option.ColorMenu:Close()
