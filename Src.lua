@@ -20,6 +20,7 @@ local gethui = gethui or function()
 end
 
 local LocalPlayer = Players.LocalPlayer or Players.PlayerAdded:Wait()
+
 local Mouse = cloneref(LocalPlayer:GetMouse())
 
 local Labels = {}
@@ -3265,7 +3266,7 @@ do
             return Base, Stroke
         end
 
-        --[[local function InitEvents(Button)
+        local function InitEvents(Button)
             Button.Base.MouseEnter:Connect(function()
                 if Button.Disabled then
                     return
@@ -3309,7 +3310,7 @@ do
                         Library:SafeCallback(Button.Func)
                     end
 
-                    RunService.RenderStepped:Wait() --// Mouse Button fires without waiting (i hate roblox)
+                    RunService.RenderStepped:Wait()
                     Button.Locked = false
                     return
                 end
@@ -3320,7 +3321,7 @@ do
 
         Button.Base, Button.Stroke = CreateButton(Button)
         InitEvents(Button)
-]]
+
         function Button:AddButton(...)
             local Info = GetInfo(...)
 
@@ -7215,231 +7216,40 @@ function Library:CreateWindow(WindowInfo)
         return Tab
     end
 
-    function Library:Toggle(Value: boolean?)
-        if typeof(Value) == "boolean" then
-            Library.Toggled = Value
-        else
-            Library.Toggled = not Library.Toggled
-        end
 
-        MainFrame.Visible = Library.Toggled
-
-        if WindowInfo.UnlockMouseWhileOpen then
-            ModalElement.Modal = Library.Toggled
-        end
-
-        if Library.Toggled and not Library.IsMobile then
-            local OldMouseIconEnabled = UserInputService.MouseIconEnabled
-            pcall(function()
-                RunService:UnbindFromRenderStep("ShowCursor")
-            end)
-            RunService:BindToRenderStep("ShowCursor", Enum.RenderPriority.Last.Value, function()
-                UserInputService.MouseIconEnabled = not Library.ShowCustomCursor
-
-                Cursor.Position = UDim2.fromOffset(Mouse.X, Mouse.Y)
-                Cursor.Visible = Library.ShowCustomCursor
-
-                if not (Library.Toggled and ScreenGui and ScreenGui.Parent) then
-                    UserInputService.MouseIconEnabled = OldMouseIconEnabled
-                    Cursor.Visible = false
-                    RunService:UnbindFromRenderStep("ShowCursor")
-                end
-            end)
-        elseif not Library.Toggled then
-            TooltipLabel.Visible = false
-
-            for _, Option in Library.Options do
-                if Option.Type == "ColorPicker" then
-                    Option.ColorMenu:Close()
-                    Option.ContextMenu:Close()
-                elseif Option.Type == "Dropdown" or Option.Type == "KeyPicker" then
-                    Option.Menu:Close()
-                end
-            end
-        end
-    end
-
-    if WindowInfo.EnableSidebarResize then
-        local Threshold = (WindowInfo.MinSidebarWidth + WindowInfo.SidebarCompactWidth) * WindowInfo.SidebarCollapseThreshold
-        local StartPos, StartWidth
-        local Dragging = false
-        local Changed
-
-        local SidebarGrabber = New("TextButton", {
-            AnchorPoint = Vector2.new(0.5, 0),
-            BackgroundTransparency = 1,
-            Position = UDim2.fromScale(0.5, 0),
-            Size = UDim2.new(0, 8, 1, 0),
-            Text = "",
-            Parent = DividerLine,
-        })
-        SidebarGrabber.MouseEnter:Connect(function()
-            TweenService:Create(DividerLine, Library.TweenInfo, {
-                BackgroundColor3 = Library:GetLighterColor(Library.Scheme.OutlineColor),
-            }):Play()
-        end)
-        SidebarGrabber.MouseLeave:Connect(function()
-            if Dragging then
-                return
-            end
-            TweenService:Create(DividerLine, Library.TweenInfo, {
-                BackgroundColor3 = Library.Scheme.OutlineColor,
-            }):Play()
-        end)
-
-        SidebarGrabber.InputBegan:Connect(function(Input: InputObject)
-            if not IsClickInput(Input) then
-                return
-            end
-
-            Library.CantDragForced = true
-
-            StartPos = Input.Position
-            StartWidth = Window:GetSidebarWidth()
-            Dragging = true
-
-            Changed = Input.Changed:Connect(function()
-                if Input.UserInputState ~= Enum.UserInputState.End then
-                    return
-                end
-
-                Library.CantDragForced = false
-                TweenService:Create(DividerLine, Library.TweenInfo, {
-                    BackgroundColor3 = Library.Scheme.OutlineColor,
-                }):Play()
-
-                Dragging = false
-                if Changed and Changed.Connected then
-                    Changed:Disconnect()
-                    Changed = nil
-                end
-            end)
-        end)
-
-        Library:GiveSignal(UserInputService.InputChanged:Connect(function(Input: InputObject)
-            if not Library.Toggled or not (ScreenGui and ScreenGui.Parent) then
-                Dragging = false
-                if Changed and Changed.Connected then
-                    Changed:Disconnect()
-                    Changed = nil
-                end
-
-                return
-            end
-
-            if Dragging and IsHoverInput(Input) then
-                local Delta = Input.Position - StartPos
-                local Width = StartWidth + Delta.X
-
-                if WindowInfo.DisableCompactingSnap then
-                    Window:SetSidebarWidth(Width)
-                    return
-                end
-
-                if Width > Threshold then
-                    Window:SetSidebarWidth(math.max(Width, WindowInfo.MinSidebarWidth))
-                else
-                    Window:SetSidebarWidth(WindowInfo.SidebarCompactWidth)
-                end
-            end
-        end))
-    end
-    if WindowInfo.EnableCompacting and WindowInfo.SidebarCompacted then
-        Window:SetSidebarWidth(WindowInfo.SidebarCompactWidth)
-    end
-    if WindowInfo.AutoShow then
-        task.spawn(Library.Toggle)
-    end
-
-    if Library.IsMobile then
-        local ToggleButton = Library:AddDraggableButton("Toggle", function()
-            Library:Toggle()
-        end, true)
-
-        local LockButton = Library:AddDraggableButton("Lock", function(self)
-            Library.CantDragForced = not Library.CantDragForced
-            self:SetText(Library.CantDragForced and "Unlock" or "Lock")
-        end, true)
-
-        if WindowInfo.MobileButtonsSide == "Right" then
-            ToggleButton.Button.Position = UDim2.new(1, -6, 0, 6)
-            ToggleButton.Button.AnchorPoint = Vector2.new(1, 0)
-
-            LockButton.Button.Position = UDim2.new(1, -6, 0, 46)
-            LockButton.Button.AnchorPoint = Vector2.new(1, 0)
-        else
-            LockButton.Button.Position = UDim2.fromOffset(6, 46)
-        end
-    end
-
-    --// Execution \\--
-    SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
-        Library:UpdateSearch(SearchBox.Text)
-    end)
-
-    Library:GiveSignal(UserInputService.InputBegan:Connect(function(Input: InputObject)
+    local function OnPlayerChange()
         if Library.Unloaded then
             return
         end
 
-        if UserInputService:GetFocusedTextBox() then
+        local PlayerList, ExcludedPlayerList = GetPlayers(), GetPlayers(true)
+        for _, Dropdown in Options do
+            if Dropdown.Type == "Dropdown" and Dropdown.SpecialType == "Player" then
+                Dropdown:SetValues(Dropdown.ExcludeLocalPlayer and ExcludedPlayerList or PlayerList)
+            end
+        end
+    end
+
+    local function OnTeamChange()
+        if Library.Unloaded then
             return
         end
 
-        if
-            (
-                typeof(Library.ToggleKeybind) == "table"
-                and Library.ToggleKeybind.Type == "KeyPicker"
-                and Input.KeyCode.Name == Library.ToggleKeybind.Value
-            ) or Input.KeyCode == Library.ToggleKeybind
-        then
-            Library.Toggle()
-        end
-    end))
-
-    Library:GiveSignal(UserInputService.WindowFocused:Connect(function()
-        Library.IsRobloxFocused = true
-    end))
-    Library:GiveSignal(UserInputService.WindowFocusReleased:Connect(function()
-        Library.IsRobloxFocused = false
-    end))
-
-    return Window
-end
-
-local function OnPlayerChange()
-    if Library.Unloaded then
-        return
-    end
-
-    local PlayerList, ExcludedPlayerList = GetPlayers(), GetPlayers(true)
-    for _, Dropdown in Options do
-        if Dropdown.Type == "Dropdown" and Dropdown.SpecialType == "Player" then
-            Dropdown:SetValues(Dropdown.ExcludeLocalPlayer and ExcludedPlayerList or PlayerList)
+        local TeamList = GetTeams()
+        for _, Dropdown in Options do
+            if Dropdown.Type == "Dropdown" and Dropdown.SpecialType == "Team" then
+                Dropdown:SetValues(TeamList)
+            end
         end
     end
-end
 
-local function OnTeamChange()
-    if Library.Unloaded then
-        return
-    end
+    Library:GiveSignal(Players.PlayerAdded:Connect(OnPlayerChange))
+    Library:GiveSignal(Players.PlayerRemoving:Connect(OnPlayerChange))
 
-    local TeamList = GetTeams()
-    for _, Dropdown in Options do
-        if Dropdown.Type == "Dropdown" and Dropdown.SpecialType == "Team" then
-            Dropdown:SetValues(TeamList)
-        end
-    end
-end
+    Library:GiveSignal(Teams.ChildAdded:Connect(OnTeamChange))
+    Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
-Library:GiveSignal(Players.PlayerAdded:Connect(OnPlayerChange))
-Library:GiveSignal(Players.PlayerRemoving:Connect(OnPlayerChange))
-
-Library:GiveSignal(Teams.ChildAdded:Connect(OnTeamChange))
-Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
-
-getgenv().Library = Library
-return Library
+    getgenv().Library = Library
+    return Library
 
 
