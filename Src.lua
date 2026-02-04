@@ -3266,7 +3266,7 @@ do
             return Base, Stroke
         end
 
-        local function InitEvents(Button)
+        --[[local function InitEvents(Button)
             Button.Base.MouseEnter:Connect(function()
                 if Button.Disabled then
                     return
@@ -3321,6 +3321,7 @@ do
 
         Button.Base, Button.Stroke = CreateButton(Button)
         InitEvents(Button)
+]]
         function Button:AddButton(...)
             local Info = GetInfo(...)
 
@@ -7221,7 +7222,6 @@ function Library:CreateWindow(WindowInfo)
         else
             Library.Toggled = not Library.Toggled
         end
-
         MainFrame.Visible = Library.Toggled
         if WindowInfo.UnlockMouseWhileOpen then
             ModalElement.Modal = Library.Toggled
@@ -7238,7 +7238,8 @@ function Library:CreateWindow(WindowInfo)
                 end
             end
         end
-    end 
+    end
+    return Window
 end
 
 local function OnPlayerChange()
