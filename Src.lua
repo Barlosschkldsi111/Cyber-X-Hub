@@ -3266,7 +3266,7 @@ do
             return Base, Stroke
         end
 
-        --[[local function InitEvents(Button)
+        local function InitEvents(Button)
             Button.Base.MouseEnter:Connect(function()
                 if Button.Disabled then
                     return
@@ -3321,7 +3321,6 @@ do
 
         Button.Base, Button.Stroke = CreateButton(Button)
         InitEvents(Button)
-]]
         function Button:AddButton(...)
             local Info = GetInfo(...)
 
@@ -7217,31 +7216,30 @@ function Library:CreateWindow(WindowInfo)
     end
 
     function Library:Toggle(Value: boolean?)
-    if typeof(Value) == "boolean" then
-        Library.Toggled = Value
-    else
-        Library.Toggled = not Library.Toggled
-    end
+        if typeof(Value) == "boolean" then
+            Library.Toggled = Value
+        else
+            Library.Toggled = not Library.Toggled
+        end
 
-    MainFrame.Visible = Library.Toggled
+        MainFrame.Visible = Library.Toggled
+        if WindowInfo.UnlockMouseWhileOpen then
+            ModalElement.Modal = Library.Toggled
+        end
+        if not Library.Toggled then
+            TooltipLabel.Visible = false
 
-    if WindowInfo.UnlockMouseWhileOpen then
-        ModalElement.Modal = Library.Toggled
-    end
-    if not Library.Toggled then
-        TooltipLabel.Visible = false
-
-        for _, Option in Library.Options do
-            if Option.Type == "ColorPicker" then
-                Option.ColorMenu:Close()
-                Option.ContextMenu:Close()
-            elseif Option.Type == "Dropdown" or Option.Type == "KeyPicker" then
-                Option.Menu:Close()
+            for _, Option in Library.Options do
+                if Option.Type == "ColorPicker" then
+                    Option.ColorMenu:Close()
+                    Option.ContextMenu:Close()
+                elseif Option.Type == "Dropdown" or Option.Type == "KeyPicker" then
+                    Option.Menu:Close()
+                end
             end
         end
-    end
+    end 
 end
-
 
 local function OnPlayerChange()
     if Library.Unloaded then
