@@ -3266,7 +3266,7 @@ do
             return Base, Stroke
         end
 
-        local function InitEvents(Button)
+        --[[local function InitEvents(Button)
             Button.Base.MouseEnter:Connect(function()
                 if Button.Disabled then
                     return
@@ -3310,7 +3310,7 @@ do
                         Library:SafeCallback(Button.Func)
                     end
 
-                    RunService.RenderStepped:Wait()
+                    RunService.RenderStepped:Wait() --// Mouse Button fires without waiting (i hate roblox)
                     Button.Locked = false
                     return
                 end
@@ -3321,7 +3321,7 @@ do
 
         Button.Base, Button.Stroke = CreateButton(Button)
         InitEvents(Button)
-
+]]
         function Button:AddButton(...)
             local Info = GetInfo(...)
 
@@ -7216,40 +7216,66 @@ function Library:CreateWindow(WindowInfo)
         return Tab
     end
 
+    function Library:Toggle(Value: boolean?)
+    if typeof(Value) == "boolean" then
+        Library.Toggled = Value
+    else
+        Library.Toggled = not Library.Toggled
+    end
 
-    local function OnPlayerChange()
-        if Library.Unloaded then
-            return
-        end
+    MainFrame.Visible = Library.Toggled
 
-        local PlayerList, ExcludedPlayerList = GetPlayers(), GetPlayers(true)
-        for _, Dropdown in Options do
-            if Dropdown.Type == "Dropdown" and Dropdown.SpecialType == "Player" then
-                Dropdown:SetValues(Dropdown.ExcludeLocalPlayer and ExcludedPlayerList or PlayerList)
+    if WindowInfo.UnlockMouseWhileOpen then
+        ModalElement.Modal = Library.Toggled
+    end
+    if not Library.Toggled then
+        TooltipLabel.Visible = false
+
+        for _, Option in Library.Options do
+            if Option.Type == "ColorPicker" then
+                Option.ColorMenu:Close()
+                Option.ContextMenu:Close()
+            elseif Option.Type == "Dropdown" or Option.Type == "KeyPicker" then
+                Option.Menu:Close()
             end
         end
     end
+end
 
-    local function OnTeamChange()
-        if Library.Unloaded then
-            return
-        end
 
-        local TeamList = GetTeams()
-        for _, Dropdown in Options do
-            if Dropdown.Type == "Dropdown" and Dropdown.SpecialType == "Team" then
-                Dropdown:SetValues(TeamList)
-            end
-        end
+local function OnPlayerChange()
+    if Library.Unloaded then
+        return
     end
 
-    Library:GiveSignal(Players.PlayerAdded:Connect(OnPlayerChange))
-    Library:GiveSignal(Players.PlayerRemoving:Connect(OnPlayerChange))
+    local PlayerList, ExcludedPlayerList = GetPlayers(), GetPlayers(true)
+    for _, Dropdown in Options do
+        if Dropdown.Type == "Dropdown" and Dropdown.SpecialType == "Player" then
+            Dropdown:SetValues(Dropdown.ExcludeLocalPlayer and ExcludedPlayerList or PlayerList)
+        end
+    end
+end
 
-    Library:GiveSignal(Teams.ChildAdded:Connect(OnTeamChange))
-    Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
+local function OnTeamChange()
+    if Library.Unloaded then
+        return
+    end
 
-    getgenv().Library = Library
-    return Library
+    local TeamList = GetTeams()
+    for _, Dropdown in Options do
+        if Dropdown.Type == "Dropdown" and Dropdown.SpecialType == "Team" then
+            Dropdown:SetValues(TeamList)
+        end
+    end
+end
+
+Library:GiveSignal(Players.PlayerAdded:Connect(OnPlayerChange))
+Library:GiveSignal(Players.PlayerRemoving:Connect(OnPlayerChange))
+
+Library:GiveSignal(Teams.ChildAdded:Connect(OnTeamChange))
+Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
+
+getgenv().Library = Library
+return Library
 
 
